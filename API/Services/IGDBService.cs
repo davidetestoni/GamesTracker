@@ -27,6 +27,7 @@ namespace API.Services
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*;");
             var games = results.Select(r => new VideoGame
             {
+                Id = r.Id.Value,
                 Name = r.Name,
                 CoverUrl = ConvertCover(r)
             });
@@ -43,6 +44,7 @@ namespace API.Services
                 var result = results.FirstOrDefault();
                 return new VideoGame
                 {
+                    Id = result.Id.Value,
                     Name = result.Name,
                     CoverUrl = ConvertCover(result)
                 };
