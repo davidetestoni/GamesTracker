@@ -7,16 +7,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './nav/nav.component';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
+import { GamesListComponent } from './games/games-list/games-list.component';
+import { GameDetailsComponent } from './games/game-details/game-details.component';
+import { LibraryComponent } from './library/library.component';
+import { SharedModule } from './_models/shared.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    GamesListComponent,
+    GameDetailsComponent,
+    LibraryComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +30,7 @@ import { RegisterComponent } from './register/register.component';
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
-    BsDropdownModule.forRoot(), // forRoot means it has some services/components that need to initialize alongside the root module
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,18 +1,21 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="#">Games Tracker</a>
+    <a class="navbar-brand" routerLink="/" routerLinkActive='active'>Games Tracker</a>
     
-    <ul class="navbar-nav mr-auto" *ngIf="accountService.currentUser$ | async">
-      <li class="nav-item">
-        <a class="nav-link" href="#">Games</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Library</a>
-      </li>
+    <ul class="navbar-nav mr-auto">
+      <!-- ng-container does not generate any HTML so it's useful to apply conditions to things -->
+      <ng-container *ngIf="accountService.currentUser$ | async">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/games" routerLinkActive='active'>Games</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/library" routerLinkActive='active'>Library</a>
+        </li>
+      </ng-container>
     </ul>
 
-    <div class="dropdown" *ngIf="accountService.currentUser$ | async" dropdown>
-      <a class="dropdown-toggle text-light" dropdownToggle>Welcome user</a>
+    <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
+      <a class="dropdown-toggle text-primary" dropdownToggle>Welcome {{user.userName | titlecase}}</a>
       <div class="dropdown-menu mt-3" *dropdownMenu>
         <a class="dropdown-item">Edit profile</a>
         <div class="dropdown-divider"></div>

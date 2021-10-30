@@ -13,6 +13,7 @@ export class AccountService {
 
   // It's a type of observable that keeps emitting the same object
   // the buffer has length 1 since we only have 1 thing to store.
+  // We use an observable so that the auth guard can subscribe to this
   private currentUserSource = new ReplaySubject<User>(1);
 
   // By convention observables have a $ at the end
