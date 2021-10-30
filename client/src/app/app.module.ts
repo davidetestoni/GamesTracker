@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +13,10 @@ import { GamesListComponent } from './games/games-list/games-list.component';
 import { GameDetailsComponent } from './games/game-details/game-details.component';
 import { LibraryComponent } from './library/library.component';
 import { SharedModule } from './_models/shared.module';
+import { TestErrorsComponent } from './errors/test-errors/test-errors.component';
+import { ErrorInterceptor } from './_interceptors/error.interceptor';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
+import { ServerErrorComponent } from './errors/server-error/server-error.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,10 @@ import { SharedModule } from './_models/shared.module';
     RegisterComponent,
     GamesListComponent,
     GameDetailsComponent,
-    LibraryComponent
+    LibraryComponent,
+    TestErrorsComponent,
+    NotFoundComponent,
+    ServerErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +39,10 @@ import { SharedModule } from './_models/shared.module';
     FormsModule,
     SharedModule
   ],
-  providers: [],
+  providers: [
+    // multi: true adds the interceptor to the other ones, we don't want to replace them
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
