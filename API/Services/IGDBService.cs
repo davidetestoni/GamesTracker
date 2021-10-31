@@ -24,6 +24,7 @@ namespace API.Services
         public async Task<IEnumerable<VideoGame>> SearchGames(string searchString)
         {
             // TODO: Check if this needs to be sanitized
+            // TODO: Add caching
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*;");
             var games = results.Select(r => new VideoGame
             {
