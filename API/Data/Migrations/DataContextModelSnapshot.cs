@@ -43,7 +43,7 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("CoverUrl")
+                    b.Property<string>("CoverId")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")

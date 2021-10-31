@@ -1,3 +1,4 @@
+using API.Interfaces;
 using API.Services;
 using System.Linq;
 using System.Net.Http;
@@ -46,12 +47,37 @@ namespace GamesTracker.Tests
         }
 
         [Fact]
-        public async Task SearchGames_ValidGame_CoverExists()
+        public async Task SearchGames_ValidGame_CoverThumbExists()
         {
             var games = await _fixture.IGDB.SearchGames(VALID_GAME);
             var game = games.First();
 
-            var bytes = await _fixture.Http.GetByteArrayAsync(game.CoverUrl);
+            var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Thumb);
+            var bytes = await _fixture.Http.GetByteArrayAsync(url);
+
+            Assert.NotEmpty(bytes);
+        }
+
+        [Fact]
+        public async Task SearchGames_ValidGame_SmallCoverExists()
+        {
+            var games = await _fixture.IGDB.SearchGames(VALID_GAME);
+            var game = games.First();
+
+            var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Small);
+            var bytes = await _fixture.Http.GetByteArrayAsync(url);
+
+            Assert.NotEmpty(bytes);
+        }
+
+        [Fact]
+        public async Task SearchGames_ValidGame_BigCoverExists()
+        {
+            var games = await _fixture.IGDB.SearchGames(VALID_GAME);
+            var game = games.First();
+
+            var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Big);
+            var bytes = await _fixture.Http.GetByteArrayAsync(url);
 
             Assert.NotEmpty(bytes);
         }

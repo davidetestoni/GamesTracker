@@ -3,7 +3,6 @@ using API.Models;
 using IGDB;
 using IGDB.Models;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,13 +25,7 @@ namespace API.Services
             // TODO: Check if this needs to be sanitized
             // TODO: Add caching
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*;");
-            var games = results.Select(r => new VideoGame
-            {
-                Id = r.Id.Value,
-                Name = r.Name,
-                CoverUrl = ConvertCover(r)
-            });
-
+            var games = results.Select(result => ToVideoGame(result));
             return games;
         }
 
@@ -43,18 +36,32 @@ namespace API.Services
             if (results.Any())
             {
                 var result = results.FirstOrDefault();
-                return new VideoGame
-                {
-                    Id = result.Id.Value,
-                    Name = result.Name,
-                    CoverUrl = ConvertCover(result)
-                };
+                return ToVideoGame(result);
             }
 
             return null;
         }
 
-        private static string ConvertCover(Game game)
-            => $"https:{game.Cover.Value.Url}";
+        public string GetCoverUrl(string imageId, GameCoverSize size)
+        {
+            var coverSize = size switch
+            {
+                GameCoverSize.Thumb => ImageSize.Thumb,
+                GameCoverSize.Small => ImageSize.CoverSmall,
+                GameCoverSize.Big => ImageSize.CoverBig,
+                _ => throw new System.NotImplementedException()
+            };
+
+            return ImageHelper.GetImageUrl(imageId, coverSize);
+        }
+
+        private static VideoGame ToVideoGame(Game game)
+        {
+            return new VideoGame(game.Id.Value)
+            {
+                Name = game.Name,
+                CoverId = game.Cover.Value.ImageId
+            };
+        }
     }
 }

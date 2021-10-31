@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211031024245_Games")]
+    [Migration("20211031155934_Games")]
     partial class Games
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("CoverUrl")
+                    b.Property<string>("CoverId")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
