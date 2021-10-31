@@ -55,5 +55,21 @@ namespace GamesTracker.Tests
 
             Assert.NotEmpty(bytes);
         }
+
+        [Fact]
+        public async Task SearchGames_EmptySearch_EmptyList()
+        {
+            var games = await _fixture.IGDB.SearchGames(string.Empty);
+
+            Assert.Empty(games);
+        }
+
+        [Fact]
+        public async Task SearchGames_VeryShortSearch_EmptyList()
+        {
+            var games = await _fixture.IGDB.SearchGames("a");
+
+            Assert.Empty(games);
+        }
     }
 }
