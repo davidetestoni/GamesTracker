@@ -6,9 +6,9 @@ namespace API.Interfaces
 {
     public interface IGamesService
     {
-        Task<VideoGame> GetGame(int id);
+        Task<VideoGame> GetGameAsync(int id);
         string GetCoverUrl(string imageId, GameCoverSize size);
-        Task<IEnumerable<VideoGame>> SearchGames(string searchString);
+        Task<IEnumerable<VideoGame>> SearchGamesAsync(string searchString);
     }
 
     public enum GameCoverSize

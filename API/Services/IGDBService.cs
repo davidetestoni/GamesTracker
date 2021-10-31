@@ -20,7 +20,7 @@ namespace API.Services
             _igdb = new IGDBClient(keys["igdb_client_id"].ToString(), keys["igdb_client_secret"].ToString());
         }
 
-        public async Task<IEnumerable<VideoGame>> SearchGames(string searchString)
+        public async Task<IEnumerable<VideoGame>> SearchGamesAsync(string searchString)
         {
             // TODO: Check if this needs to be sanitized
             // TODO: Add caching
@@ -29,7 +29,7 @@ namespace API.Services
             return games;
         }
 
-        public async Task<VideoGame> GetGame(int id)
+        public async Task<VideoGame> GetGameAsync(int id)
         {
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"fields id,name,cover.*; where id = {id};");
 

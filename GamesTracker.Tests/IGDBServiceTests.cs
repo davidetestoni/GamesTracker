@@ -30,26 +30,26 @@ namespace GamesTracker.Tests
         }
 
         [Fact]
-        public async Task SearchGames_ValidGame_NotEmpty()
+        public async Task SearchGamesAsync_ValidGame_NotEmpty()
         {
-            var games = await _fixture.IGDB.SearchGames(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
 
             Assert.NotEmpty(games);
         }
 
         [Fact]
-        public async Task SearchGames_ValidGame_HasName()
+        public async Task SearchGamesAsync_ValidGame_HasName()
         {
-            var games = await _fixture.IGDB.SearchGames(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
             var game = games.First();
 
             Assert.True(!string.IsNullOrEmpty(game.Name));
         }
 
         [Fact]
-        public async Task SearchGames_ValidGame_CoverThumbExists()
+        public async Task SearchGamesAsync_ValidGame_CoverThumbExists()
         {
-            var games = await _fixture.IGDB.SearchGames(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
             var game = games.First();
 
             var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Thumb);
@@ -59,9 +59,9 @@ namespace GamesTracker.Tests
         }
 
         [Fact]
-        public async Task SearchGames_ValidGame_SmallCoverExists()
+        public async Task SearchGamesAsync_ValidGame_SmallCoverExists()
         {
-            var games = await _fixture.IGDB.SearchGames(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
             var game = games.First();
 
             var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Small);
@@ -71,9 +71,9 @@ namespace GamesTracker.Tests
         }
 
         [Fact]
-        public async Task SearchGames_ValidGame_BigCoverExists()
+        public async Task SearchGamesAsync_ValidGame_BigCoverExists()
         {
-            var games = await _fixture.IGDB.SearchGames(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
             var game = games.First();
 
             var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Big);
@@ -83,17 +83,17 @@ namespace GamesTracker.Tests
         }
 
         [Fact]
-        public async Task SearchGames_EmptySearch_EmptyList()
+        public async Task SearchGamesAsync_EmptySearch_EmptyList()
         {
-            var games = await _fixture.IGDB.SearchGames(string.Empty);
+            var games = await _fixture.IGDB.SearchGamesAsync(string.Empty);
 
             Assert.Empty(games);
         }
 
         [Fact]
-        public async Task SearchGames_VeryShortSearch_EmptyList()
+        public async Task SearchGamesAsync_VeryShortSearch_EmptyList()
         {
-            var games = await _fixture.IGDB.SearchGames("a");
+            var games = await _fixture.IGDB.SearchGamesAsync("a");
 
             Assert.Empty(games);
         }
