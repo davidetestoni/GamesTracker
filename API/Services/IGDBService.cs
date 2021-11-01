@@ -1,4 +1,4 @@
-using API.Interfaces;
+﻿using API.Interfaces;
 using API.Models;
 using IGDB;
 using IGDB.Models;
@@ -24,14 +24,14 @@ namespace API.Services
         {
             // TODO: Check if this needs to be sanitized
             // TODO: Add caching
-            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*;");
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*; limit 100;");
             var games = results.Select(result => ToVideoGame(result));
             return games;
         }
 
         public async Task<VideoGame> GetGameAsync(long id)
         {
-            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"fields id,name,cover.*; where id = {id};");
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"fields id,name,cover.*; where id = {id}; limit 1;");
 
             if (results.Any())
             {
