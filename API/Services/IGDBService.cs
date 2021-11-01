@@ -1,4 +1,4 @@
-﻿using API.Interfaces;
+using API.Interfaces;
 using API.Models;
 using IGDB;
 using IGDB.Models;
@@ -44,6 +44,11 @@ namespace API.Services
 
         public string GetImageUrl(string imageId, GameCoverSize size)
         {
+            if (string.IsNullOrWhiteSpace(imageId))
+            {
+                return null;
+            }
+
             var coverSize = size switch
             {
                 GameCoverSize.Thumb => ImageSize.Thumb,
@@ -57,10 +62,15 @@ namespace API.Services
 
         private static VideoGame ToVideoGame(Game game)
         {
+            if (!game.Id.HasValue)
+            {
+                return null;
+            }
+
             return new VideoGame(game.Id.Value)
             {
                 Name = game.Name,
-                CoverId = game.Cover.Value.ImageId
+                CoverId = game.Cover?.Value.ImageId
             };
         }
     }
