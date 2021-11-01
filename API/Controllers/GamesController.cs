@@ -1,27 +1,54 @@
 ﻿using API.DTOs;
 using API.Interfaces;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class GamesController : BaseApiController
     {
         private readonly IGameRepository _gameRepository;
+        private readonly IGamesService _gamesService;
+        private readonly IMapper _mapper;
 
-        public GamesController(IGameRepository gameRepository)
+        public GamesController(IGameRepository gameRepository, IGamesService gamesService, IMapper mapper)
         {
             _gameRepository = gameRepository;
+            _gamesService = gamesService;
+            _mapper = mapper;
         }
 
-        [HttpGet]
-        public Task<ActionResult<IEnumerable<GameInfoDto>>> GetUsers()
-            => throw new NotImplementedException();
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<GameInfoDto>>> SearchGames(string query)
+        {
+            var results = await _gamesService.SearchGamesAsync(query);
+            return Ok(_mapper.Map<IEnumerable<GameInfoDto>>(results));
+        }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GameInfoDto>> GetGame(int id)
-            => await _gameRepository.GetGameInfoAsync(id);
+        public async Task<ActionResult<GameInfoDto>> GetGame(long id)
+        {
+            var game = await _gamesService.GetGameAsync(id);
+            return _mapper.Map<GameInfoDto>(game);
+        }
+
+        [HttpGet("library/{username}")]
+        public async Task<ActionResult<IEnumerable<GameInfoDto>>> GetLibrary(string username)
+        {
+            var userGames = await _gameRepository.GetLibraryAsync(username);
+            var library = new List<GameInfoDto>();
+
+            foreach (var userGame in userGames)
+            {
+                var game = await _gamesService.GetGameAsync(userGame.Id);
+                library.Add(_mapper.Map<GameInfoDto>(game));
+            }
+
+            return Ok(library);
+        }
     }
 }

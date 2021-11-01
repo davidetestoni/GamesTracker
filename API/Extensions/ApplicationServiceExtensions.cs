@@ -30,6 +30,7 @@ namespace API.Extensions
             // Transient = within the scope of a method
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IGameRepository, GameRepository>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddSingleton<IGamesService, IGDBService>();
 

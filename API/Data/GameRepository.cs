@@ -1,9 +1,10 @@
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,6 +32,13 @@ namespace API.Data
                 .Where(g => g.Id == id)
                 .ProjectTo<GameInfoDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
+
+        public async Task<IEnumerable<GameInfoDto>> GetLibraryAsync(string username)
+            => await _context.Games
+                .Include(g => g.PlayedBy)
+                .Where(g => g.PlayedBy.Any(ug => ug.SourceUser.UserName == username.ToLower()))
+                .ProjectTo<GameInfoDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
 
         public async Task<bool> SaveAllAsync()
             => await _context.SaveChangesAsync() > 0;
