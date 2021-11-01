@@ -27,7 +27,7 @@ namespace API.Controllers
         // so if we want to get them from the body we need to pass them as objects (DTOs)
 
         [HttpPost("register")]
-        public async Task<ActionResult<AppUser>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if (await UserExists(registerDto.UserName))
             {
@@ -45,7 +45,11 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         [HttpPost("login")]
