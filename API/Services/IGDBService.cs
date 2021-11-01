@@ -3,6 +3,7 @@ using API.Models;
 using IGDB;
 using IGDB.Models;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,11 @@ namespace API.Services
 
         public async Task<IEnumerable<VideoGame>> SearchGamesAsync(string searchString)
         {
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return Array.Empty<VideoGame>();
+            }
+
             // TODO: Check if this needs to be sanitized
             // TODO: Add caching
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*; limit 100;");
