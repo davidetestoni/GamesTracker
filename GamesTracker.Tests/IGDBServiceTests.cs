@@ -52,7 +52,7 @@ namespace GamesTracker.Tests
             var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
             var game = games.First();
 
-            var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Thumb);
+            var url = _fixture.IGDB.GetImageUrl(game.CoverId, GameCoverSize.Thumb);
             var bytes = await _fixture.Http.GetByteArrayAsync(url);
 
             Assert.NotEmpty(bytes);
@@ -64,7 +64,7 @@ namespace GamesTracker.Tests
             var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
             var game = games.First();
 
-            var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Small);
+            var url = _fixture.IGDB.GetImageUrl(game.CoverId, GameCoverSize.Small);
             var bytes = await _fixture.Http.GetByteArrayAsync(url);
 
             Assert.NotEmpty(bytes);
@@ -76,7 +76,7 @@ namespace GamesTracker.Tests
             var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
             var game = games.First();
 
-            var url = _fixture.IGDB.GetCoverUrl(game.CoverId, GameCoverSize.Big);
+            var url = _fixture.IGDB.GetImageUrl(game.CoverId, GameCoverSize.Big);
             var bytes = await _fixture.Http.GetByteArrayAsync(url);
 
             Assert.NotEmpty(bytes);

@@ -42,7 +42,7 @@ namespace API.Services
             return null;
         }
 
-        public string GetCoverUrl(string imageId, GameCoverSize size)
+        public string GetImageUrl(string imageId, GameCoverSize size)
         {
             var coverSize = size switch
             {
