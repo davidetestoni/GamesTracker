@@ -1,4 +1,4 @@
-using API.Interfaces;
+﻿using API.Interfaces;
 using API.Models;
 using IGDB;
 using IGDB.Models;
@@ -29,7 +29,7 @@ namespace API.Services
             return games;
         }
 
-        public async Task<VideoGame> GetGameAsync(int id)
+        public async Task<VideoGame> GetGameAsync(long id)
         {
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"fields id,name,cover.*; where id = {id};");
 

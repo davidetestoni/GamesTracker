@@ -1,4 +1,4 @@
-﻿using API.DTOs;
+using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
@@ -23,10 +23,10 @@ namespace API.Data
         public void Add(Game game)
             => _context.Add(game);
 
-        public async Task<Game> GetGameAsync(int id)
+        public async Task<Game> GetGameAsync(long id)
             => await _context.Games.FindAsync(id);
 
-        public async Task<GameInfoDto> GetGameInfoAsync(int id)
+        public async Task<GameInfoDto> GetGameInfoAsync(long id)
             => await _context.Games
                 .Where(g => g.Id == id)
                 .ProjectTo<GameInfoDto>(_mapper.ConfigurationProvider)

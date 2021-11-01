@@ -1,4 +1,4 @@
-﻿using API.DTOs;
+using API.DTOs;
 using API.Entities;
 using System.Threading.Tasks;
 
@@ -9,6 +9,7 @@ namespace API.Interfaces
         void Add(Game game);
         Task<bool> SaveAllAsync();
         Task<Game> GetGameAsync(int id);
-        Task<GameInfoDto> GetGameInfoAsync(int id);
+        Task<Game> GetGameAsync(long id);
+        Task<GameInfoDto> GetGameInfoAsync(long id);
     }
 }
