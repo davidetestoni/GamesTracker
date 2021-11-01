@@ -1,4 +1,4 @@
-﻿using API.Interfaces;
+using API.Interfaces;
 using API.Models;
 using IGDB;
 using IGDB.Models;
@@ -52,7 +52,7 @@ namespace API.Services
                 _ => throw new System.NotImplementedException()
             };
 
-            return ImageHelper.GetImageUrl(imageId, coverSize);
+            return "https:" + ImageHelper.GetImageUrl(imageId, coverSize);
         }
 
         private static VideoGame ToVideoGame(Game game)
