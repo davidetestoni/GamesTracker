@@ -18,7 +18,7 @@ namespace API.Helpers
             CreateMap<VideoGame, GameInfoDto>()
                 .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom<GameCoverUrlResolver>());
 
-            CreateMap<VideoGame, GameDetailsDto>()
+            CreateMap<VideoGameDetails, GameDetailsDto>()
                 .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom<GameCoverUrlResolver>());
         }
     }
