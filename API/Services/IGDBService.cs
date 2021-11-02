@@ -33,14 +33,16 @@ namespace API.Services
             // TODO: Add pagination: use /games/count endpoint. Then you can use limit and offset in the query to paginate. This is useful
             // since the maximum limit you can set is 500 and if a query returns more than 500 items it's a problem! For now we will return
             // at most 50 items until pagination is implemented.
-            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*; where category = 0; limit 50;");
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
+                $"search \"{searchString}\"; fields name,cover.*,release_dates.*; where category = 0; limit 50;");
             var games = results.Select(result => ToVideoGame(result));
             return games;
         }
 
         public async Task<VideoGame> GetGameAsync(long id)
         {
-            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"fields id,name,cover.*; where id = {id}; limit 1;");
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
+                $"fields id,name,cover.*,release_dates.*; where id = {id}; limit 1;");
 
             if (results.Any())
             {
@@ -54,7 +56,8 @@ namespace API.Services
         public async Task<VideoGameDetails> GetGameDetailsAsync(long id)
         {
             // TODO: Change this query to get all required fields
-            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"fields id,name,cover.*; where id = {id}; limit 1;");
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
+                $"fields id,name,cover.*,release_dates.*,genres.*; where id = {id}; limit 1;");
 
             if (results.Any())
             {
@@ -77,7 +80,7 @@ namespace API.Services
                 GameCoverSize.Thumb => ImageSize.Thumb,
                 GameCoverSize.Small => ImageSize.CoverSmall,
                 GameCoverSize.Big => ImageSize.CoverBig,
-                _ => throw new System.NotImplementedException()
+                _ => throw new NotImplementedException()
             };
 
             return "https:" + ImageHelper.GetImageUrl(imageId, coverSize);
@@ -90,11 +93,23 @@ namespace API.Services
                 return null;
             }
 
-            return new VideoGame(game.Id.Value)
+            var videoGame = new VideoGame(game.Id.Value)
             {
                 Name = game.Name,
                 CoverId = game.Cover?.Value.ImageId
             };
+
+            if (game.ReleaseDates is not null && game.ReleaseDates.Values.Length > 1)
+            {
+                var releaseDate = game.ReleaseDates.Values.Last();
+
+                if (releaseDate is not null && releaseDate.Year.HasValue)
+                {
+                    videoGame.Year = releaseDate.Year.Value;
+                }
+            }
+
+            return videoGame;
         }
 
         private static VideoGameDetails ToVideoGameDetails(Game game)
@@ -104,11 +119,24 @@ namespace API.Services
                 return null;
             }
 
-            return new VideoGameDetails(game.Id.Value)
+            var videoGame = new VideoGameDetails(game.Id.Value)
             {
                 Name = game.Name,
-                CoverId = game.Cover?.Value.ImageId
+                CoverId = game.Cover?.Value.ImageId,
+                Genres = game.Genres is not null ? game.Genres.Values.Select(g => g.Name).ToArray() : Array.Empty<string>()
             };
+
+            if (game.ReleaseDates is not null && game.ReleaseDates.Values.Length > 1)
+            {
+                var releaseDate = game.ReleaseDates.Values.Last();
+
+                if (releaseDate is not null && releaseDate.Year.HasValue)
+                {
+                    videoGame.Year = releaseDate.Year.Value;
+                }
+            }
+
+            return videoGame;
         }
     }
 }
