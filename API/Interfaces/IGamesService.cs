@@ -9,6 +9,7 @@ namespace API.Interfaces
         Task<VideoGame> GetGameAsync(long id);
         Task<VideoGameDetails> GetGameDetailsAsync(long id);
         string GetImageUrl(string imageId, GameCoverSize size);
+        string GetImageUrl(string screenshotId, GameScreenshotSize size);
         Task<IEnumerable<VideoGame>> SearchGamesAsync(string searchString);
     }
 
@@ -17,5 +18,12 @@ namespace API.Interfaces
         Thumb,
         Small,
         Big
+    }
+
+    public enum GameScreenshotSize
+    {
+        Medium,
+        Big,
+        Huge
     }
 }

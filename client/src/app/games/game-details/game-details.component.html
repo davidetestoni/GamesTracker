@@ -1,24 +1,34 @@
-<div class="row" *ngIf="game">
-    <div class="col-3">
-        <div class="card">
-            <img src="{{game.coverUrl}}" alt="{{game.name}}" class="card-img-top img-thumbnail">
-            <div class="card-body">
-                <div>
-                    <strong>Year:</strong> {{game.year}}
+<div class="container-fluid" *ngIf="game">
+    <div class="row">
+        <div class="col-3">
+            <div class="card">
+                <img src="{{game.coverUrl}}" alt="{{game.name}}" class="card-img-top img-thumbnail">
+                <div class="card-body">
+                    <div>
+                        <strong>Year:</strong> {{game.year || 'Unknown'}}
+                    </div>
+                    <div>
+                        <strong>Genre:</strong> {{game.genres.length > 0 ? game.genres.join(', ') : 'Unknown'}}
+                    </div>
                 </div>
-                <div>
-                    <strong>Genre:</strong> {{game.genres.join(', ')}}
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="btn-group d-flex">
-                    <button class="btn btn-success">Add to my list</button>
+                <div class="card-footer">
+                    <div class="btn-group d-flex">
+                        <button class="btn btn-success">Add to my list</button>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="col-9">
+            <h3>{{game.name}}</h3>
+            <p>{{game.summary}}</p>
+        </div>
     </div>
-    <div class="col-9">
-        <h3>{{game.name}}</h3>
-        <p>{{game.summary}}</p>
+    <div class="row mt-5" *ngIf="game.screenshots.length > 0">
+        <h3>Screenshots</h3>
+        <div class="col-12 d-flex justify-content-center">
+            <ngx-gallery [options]="galleryOptions" [images]="galleryImages"
+            style="display: inline-block; margin-bottom: 20px;"
+            class="ngx-gallery"></ngx-gallery>
+        </div>
     </div>
 </div>

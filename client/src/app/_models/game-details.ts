@@ -1,3 +1,5 @@
+import { Screenshot } from "./screenshot";
+
 export interface GameDetails {
     id: number;
     name: string;
@@ -5,4 +7,5 @@ export interface GameDetails {
     year: number;
     genres: string[];
     summary: string;
+    screenshots: Screenshot[];
 }

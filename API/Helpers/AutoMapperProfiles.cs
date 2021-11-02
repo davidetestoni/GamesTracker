@@ -20,6 +20,8 @@ namespace API.Helpers
 
             CreateMap<VideoGameDetails, GameDetailsDto>()
                 .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom<GameCoverUrlResolver>());
+
+            CreateMap<VideoGameScreenshot, ScreenshotDto>();
         }
     }
 }

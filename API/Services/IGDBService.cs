@@ -57,7 +57,7 @@ namespace API.Services
         {
             // TODO: Change this query to get all required fields
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
-                $"fields id,name,cover.*,release_dates.*,genres.*,summary; where id = {id}; limit 1;");
+                $"fields id,name,cover.*,release_dates.*,genres.*,summary,screenshots.*; where id = {id}; limit 1;");
 
             if (results.Any())
             {
@@ -86,7 +86,25 @@ namespace API.Services
             return "https:" + ImageHelper.GetImageUrl(imageId, coverSize);
         }
 
-        private static VideoGame ToVideoGame(Game game)
+        public string GetImageUrl(string screenshotId, GameScreenshotSize size)
+        {
+            if (string.IsNullOrWhiteSpace(screenshotId))
+            {
+                return null;
+            }
+
+            var screenshotSize = size switch
+            {
+                GameScreenshotSize.Medium => ImageSize.ScreenshotMed,
+                GameScreenshotSize.Big => ImageSize.ScreenshotBig,
+                GameScreenshotSize.Huge => ImageSize.ScreenshotHuge,
+                _ => throw new NotImplementedException()
+            };
+
+            return "https:" + ImageHelper.GetImageUrl(screenshotId, screenshotSize);
+        }
+
+        private VideoGame ToVideoGame(Game game)
         {
             if (!game.Id.HasValue)
             {
@@ -112,7 +130,7 @@ namespace API.Services
             return videoGame;
         }
 
-        private static VideoGameDetails ToVideoGameDetails(Game game)
+        private VideoGameDetails ToVideoGameDetails(Game game)
         {
             if (!game.Id.HasValue)
             {
@@ -123,8 +141,15 @@ namespace API.Services
             {
                 Name = game.Name,
                 CoverId = game.Cover?.Value.ImageId,
-                Genres = game.Genres is not null ? game.Genres.Values.Select(g => g.Name).ToArray() : Array.Empty<string>(),
-                Summary = game.Summary
+                Summary = game.Summary,
+
+                Genres = game.Genres is not null
+                    ? game.Genres.Values.Select(g => g.Name).ToArray() 
+                    : Array.Empty<string>(),
+
+                Screenshots = game.Screenshots is not null
+                    ? game.Screenshots.Values.Select(s => ToScreenshot(s)).ToArray()
+                    : Array.Empty<VideoGameScreenshot>()
             };
 
             if (game.ReleaseDates is not null && game.ReleaseDates.Values.Length > 1)
@@ -139,5 +164,13 @@ namespace API.Services
 
             return videoGame;
         }
+
+        private VideoGameScreenshot ToScreenshot(Screenshot screenshot)
+            => new()
+            {
+                MediumUrl = GetImageUrl(screenshot.ImageId, GameScreenshotSize.Medium),
+                BigUrl = GetImageUrl(screenshot.ImageId, GameScreenshotSize.Big),
+                HugeUrl = GetImageUrl(screenshot.ImageId, GameScreenshotSize.Huge),
+            };
     }
 }
