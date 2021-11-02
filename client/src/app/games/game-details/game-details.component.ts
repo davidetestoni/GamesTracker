@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GameDetails } from 'src/app/_models/game-details';
 
 @Component({
   selector: 'app-game-details',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./game-details.component.css']
 })
 export class GameDetailsComponent implements OnInit {
+  game: GameDetails | undefined = undefined;
 
   constructor() { }
 

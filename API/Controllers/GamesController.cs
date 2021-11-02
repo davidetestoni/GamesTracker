@@ -30,10 +30,10 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GameInfoDto>> GetGame(long id)
+        public async Task<ActionResult<GameDetailsDto>> GetGameDetails(long id)
         {
-            var game = await _gamesService.GetGameAsync(id);
-            return _mapper.Map<GameInfoDto>(game);
+            var game = await _gamesService.GetGameDetailsAsync(id);
+            return _mapper.Map<GameDetailsDto>(game);
         }
 
         [HttpGet("library/{username}")]

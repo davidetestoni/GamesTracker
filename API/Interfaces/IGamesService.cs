@@ -7,6 +7,7 @@ namespace API.Interfaces
     public interface IGamesService
     {
         Task<VideoGame> GetGameAsync(long id);
+        Task<VideoGameDetails> GetGameDetailsAsync(long id);
         string GetImageUrl(string imageId, GameCoverSize size);
         Task<IEnumerable<VideoGame>> SearchGamesAsync(string searchString);
     }

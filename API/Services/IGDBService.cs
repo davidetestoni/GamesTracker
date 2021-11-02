@@ -51,6 +51,20 @@ namespace API.Services
             return null;
         }
 
+        public async Task<VideoGameDetails> GetGameDetailsAsync(long id)
+        {
+            // TODO: Change this query to get all required fields
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"fields id,name,cover.*; where id = {id}; limit 1;");
+
+            if (results.Any())
+            {
+                var result = results.FirstOrDefault();
+                return ToVideoGameDetails(result);
+            }
+
+            return null;
+        }
+
         public string GetImageUrl(string imageId, GameCoverSize size)
         {
             if (string.IsNullOrWhiteSpace(imageId))
@@ -77,6 +91,20 @@ namespace API.Services
             }
 
             return new VideoGame(game.Id.Value)
+            {
+                Name = game.Name,
+                CoverId = game.Cover?.Value.ImageId
+            };
+        }
+
+        private static VideoGameDetails ToVideoGameDetails(Game game)
+        {
+            if (!game.Id.HasValue)
+            {
+                return null;
+            }
+
+            return new VideoGameDetails(game.Id.Value)
             {
                 Name = game.Name,
                 CoverId = game.Cover?.Value.ImageId
