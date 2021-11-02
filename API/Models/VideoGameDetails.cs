@@ -7,6 +7,7 @@
         public string CoverId { get; set; }
         public int? Year { get; set; } = null;
         public string[] Genres { get; set; }
+        public string Summary { get; set; }
 
         public VideoGameDetails(long id)
         {

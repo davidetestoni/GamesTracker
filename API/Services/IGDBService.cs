@@ -57,7 +57,7 @@ namespace API.Services
         {
             // TODO: Change this query to get all required fields
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
-                $"fields id,name,cover.*,release_dates.*,genres.*; where id = {id}; limit 1;");
+                $"fields id,name,cover.*,release_dates.*,genres.*,summary; where id = {id}; limit 1;");
 
             if (results.Any())
             {
@@ -123,7 +123,8 @@ namespace API.Services
             {
                 Name = game.Name,
                 CoverId = game.Cover?.Value.ImageId,
-                Genres = game.Genres is not null ? game.Genres.Values.Select(g => g.Name).ToArray() : Array.Empty<string>()
+                Genres = game.Genres is not null ? game.Genres.Values.Select(g => g.Name).ToArray() : Array.Empty<string>(),
+                Summary = game.Summary
             };
 
             if (game.ReleaseDates is not null && game.ReleaseDates.Values.Length > 1)
