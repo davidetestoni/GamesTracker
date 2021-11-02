@@ -30,7 +30,10 @@ namespace API.Services
 
             // TODO: Check if this needs to be sanitized
             // TODO: Add caching
-            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*; limit 100;");
+            // TODO: Add pagination: use /games/count endpoint. Then you can use limit and offset in the query to paginate. This is useful
+            // since the maximum limit you can set is 500 and if a query returns more than 500 items it's a problem! For now we will return
+            // at most 50 items until pagination is implemented.
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{searchString}\"; fields name,cover.*; where category = 0; limit 50;");
             var games = results.Select(result => ToVideoGame(result));
             return games;
         }
@@ -52,7 +55,7 @@ namespace API.Services
         {
             if (string.IsNullOrWhiteSpace(imageId))
             {
-                return null;
+                imageId = "nocover";
             }
 
             var coverSize = size switch
