@@ -22,6 +22,8 @@ namespace API.Helpers
                 .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom<GameCoverUrlResolver>());
 
             CreateMap<VideoGameScreenshot, ScreenshotDto>();
+
+            CreateMap<RegisterDto, AppUser>();
         }
     }
 }
