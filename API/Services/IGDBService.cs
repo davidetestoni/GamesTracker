@@ -1,8 +1,10 @@
-﻿using API.Interfaces;
+﻿using API.Extensions;
+using API.Interfaces;
 using API.Models;
 using API.Models.Pagination;
 using IGDB;
 using IGDB.Models;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
@@ -14,11 +16,15 @@ namespace API.Services
     public class IGDBService : IGamesService
     {
         private readonly IGDBClient _igdb;
+        private readonly IDistributedCache _cache;
 
-        public IGDBService()
+        public TimeSpan CacheLifetime { get; set; } = TimeSpan.FromHours(1);
+
+        public IGDBService(IDistributedCache cache)
         {
             var keys = JObject.Parse(File.ReadAllText("appkeys.json"));
             _igdb = new IGDBClient(keys["igdb_client_id"].ToString(), keys["igdb_client_secret"].ToString());
+            _cache = cache;
         }
 
         public async Task<PagedList<VideoGame>> SearchGamesAsync(GamesParams gamesParams)
@@ -36,12 +42,23 @@ namespace API.Services
 
             var count = await CountGames(gamesParams);
 
-            // TODO: Add caching
+            // Check if we already have the games in the cache
+            var cached = await _cache.GetStringAsync(gamesParams.Serialize());
+            if (cached is not null)
+            {
+                Console.WriteLine($"Using cached list of video games");
+                return new PagedList<VideoGame>(cached.Deserialize<VideoGame[]>(), count, gamesParams.PageNumber, gamesParams.PageSize);
+            }
+
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
                 $"search \"{gamesParams.Query}\"; fields name,cover.*,release_dates.*; where category = 0; " +
                 $"limit {gamesParams.PageSize}; offset {(gamesParams.PageNumber - 1) * gamesParams.PageSize};");
 
             var games = results.Select(result => ToVideoGame(result));
+
+            // Add them to the cache
+            await AddToCacheAsync(gamesParams.Serialize(), games.ToArray().Serialize());
+
             return new PagedList<VideoGame>(games, count, gamesParams.PageNumber, gamesParams.PageSize);
         }
 
@@ -50,6 +67,13 @@ namespace API.Services
         // when using games/count as endpoint in the QueryAsync method it will escape the / character.
         private async Task<int> CountGames(GamesParams gamesParams)
         {
+            // Try to get it from the cache
+            var cachedCount = await _cache.GetStringAsync($"[count] {gamesParams.Query}");
+            if (cachedCount is not null)
+            {
+                return int.Parse(cachedCount);
+            }
+
             var count = 0;
             Game[] results;
 
@@ -61,12 +85,14 @@ namespace API.Services
             }
             while (results.Length == 500);
 
+            // Cache it
+            await AddToCacheAsync($"[count] {gamesParams.Query}", count.ToString());
             return count;
         }
 
         public async Task<VideoGame> GetGameAsync(long id)
         {
-            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
+            var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games,
                 $"fields id,name,cover.*,release_dates.*; where id = {id}; limit 1;");
 
             if (results.Any())
@@ -80,14 +106,25 @@ namespace API.Services
 
         public async Task<VideoGameDetails> GetGameDetailsAsync(long id)
         {
-            // TODO: Change this query to get all required fields
+            // Try to return it from the cache
+            var cached = await _cache.GetStringAsync($"[game] {id}");
+            if (cached is not null)
+            {
+                Console.WriteLine($"Using cached video game details");
+                return cached.Deserialize<VideoGameDetails>();
+            }
+
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
                 $"fields id,name,cover.*,release_dates.*,genres.*,summary,screenshots.*; where id = {id}; limit 1;");
 
             if (results.Any())
             {
-                var result = results.FirstOrDefault();
-                return ToVideoGameDetails(result);
+                var result = results[0];
+                var details = ToVideoGameDetails(result);
+
+                // Cache it
+                await AddToCacheAsync($"[game] {id}", details.Serialize());
+                return details;
             }
 
             return null;
@@ -197,5 +234,18 @@ namespace API.Services
                 BigUrl = GetImageUrl(screenshot.ImageId, GameScreenshotSize.Big),
                 HugeUrl = GetImageUrl(screenshot.ImageId, GameScreenshotSize.Huge),
             };
+
+        /// <summary>
+        /// Sets the key-value pair in the distributed cache while also configuring the expiration time.
+        /// </summary>
+        private async Task AddToCacheAsync(string key, string value)
+        {
+            var expiration = new DistributedCacheEntryOptions 
+            {
+                AbsoluteExpirationRelativeToNow = CacheLifetime
+            };
+
+            await _cache.SetStringAsync(key, value, expiration);
+        }
     }
 }

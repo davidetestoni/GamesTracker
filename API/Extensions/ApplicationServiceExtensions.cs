@@ -33,6 +33,7 @@ namespace API.Extensions
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddSingleton<IGamesService, IGDBService>();
+            services.AddDistributedMemoryCache();
 
             return services;
         }

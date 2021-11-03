@@ -1,6 +1,9 @@
 using API.Interfaces;
 using API.Models.Pagination;
 using API.Services;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,7 +18,9 @@ namespace GamesTracker.Tests
 
         public IGDBFixture()
         {
-            IGDB = new IGDBService();
+            var opts = Options.Create(new MemoryDistributedCacheOptions());
+            var cache = new MemoryDistributedCache(opts);
+            IGDB = new IGDBService(cache);
             Http = new HttpClient();
         }
     }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameInfo } from 'src/app/_models/game-info';
 import { Pagination } from 'src/app/_models/pagination';
+import { BusyService } from 'src/app/_services/busy.service';
 import { GamesService } from 'src/app/_services/games.service';
 
 @Component({
@@ -25,7 +26,7 @@ export class GamesListComponent implements OnInit {
   };
 
   constructor(private gamesService: GamesService, private activatedRoute: ActivatedRoute,
-    private router: Router) { }
+    private router: Router, private busyService: BusyService) { }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
@@ -41,6 +42,11 @@ export class GamesListComponent implements OnInit {
   }
 
   searchGames(query: string) {
+
+    // Fixes a bug where it would endlessly loop through pages 1 and 2 and freeze the browser
+    if (this.busyService.isBusy()) {
+      return;
+    }
 
     if (query !== this.lastQuery) {
       this.pageNumber = 1;

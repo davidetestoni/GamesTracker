@@ -18,6 +18,10 @@ export class BusyService {
     });
   }
 
+  isBusy(): boolean {
+    return this.busyRequestCount > 0;
+  }
+
   idle() {
     this.busyRequestCount--;
     if (this.busyRequestCount <= 0) {
