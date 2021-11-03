@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GameInfo } from 'src/app/_models/game-info';
 import { Pagination } from 'src/app/_models/pagination';
 import { GamesService } from 'src/app/_services/games.service';
@@ -18,18 +19,21 @@ export class GamesListComponent implements OnInit {
   };
   pageNumber: number = 1;
   pageSize: number = 12;
+  lastQuery: string = '';
   model: GameSearch = { 
     query: ''
   };
 
-  constructor(private gamesService: GamesService) { }
+  constructor(private gamesService: GamesService, private activatedRoute: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
-    // TODO: Remove this in prod
-    // -------------------------
-    this.model.query = 'Wolfenstein';
-    this.search();
-    // -------------------------
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.model.query = params.query || this.model.query;
+      this.pageNumber = params.pageNumber || this.pageNumber;
+      this.pageSize = params.pageSize || this.pageSize;
+      this.search();
+    });
   }
 
   search() {
@@ -37,10 +41,42 @@ export class GamesListComponent implements OnInit {
   }
 
   searchGames(query: string) {
-    this.gamesService.searchGames(query, this.pageNumber, this.pageSize).subscribe(games => {
-      this.games = games.result;
-      this.pagination = games.pagination;
-    });
+
+    if (query !== this.lastQuery) {
+      this.pageNumber = 1;
+    }
+
+    let queryParams = null;
+
+    if (query) {
+      this.gamesService.searchGames(query, this.pageNumber, this.pageSize).subscribe(games => {
+        this.games = games.result;
+        this.pagination = games.pagination;
+        this.lastQuery = query;
+      });
+      queryParams = {
+        query: query,
+        pageNumber: this.pageNumber,
+        pageSize: this.pageSize
+      };
+    }
+    else {
+      this.games = [];
+      this.pagination = {
+        currentPage: 1,
+        itemsPerPage: 12,
+        totalItems: 0,
+        totalPages: 1
+      };
+    }
+
+    // Update the URL
+    this.router.navigate([], 
+      {
+        relativeTo: this.activatedRoute,
+        queryParams: queryParams,
+        queryParamsHandling: 'merge'
+      });
   }
 
   pageChanged(event: any) {

@@ -19,13 +19,14 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-center" *ngIf="pagination">
+<div class="d-flex justify-content-center" *ngIf="pagination && games.length > 0 && pagination.totalItems > games.length">
     <pagination
         [boundaryLinks]="true"
         [totalItems]="pagination.totalItems"
         [itemsPerPage]="pagination.itemsPerPage"
         [(ngModel)]="pagination.currentPage"
         (pageChanged)="pageChanged($event)"
+        [maxSize]="8"
         previousText="&lsaquo;"
         nextText="&rsaquo;"
         firstText="&laquo;"
