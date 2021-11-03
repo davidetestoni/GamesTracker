@@ -1,5 +1,7 @@
 ﻿using API.DTOs;
+using API.Extensions;
 using API.Interfaces;
+using API.Models.Pagination;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +24,14 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<GameInfoDto>>> SearchGames(string query)
+        [HttpPost("search")]
+        public async Task<ActionResult<IEnumerable<GameInfoDto>>> SearchGames(GamesParams gamesParams)
         {
-            var results = await _gamesService.SearchGamesAsync(query);
+            var results = await _gamesService.SearchGamesAsync(gamesParams);
+
+            Response.AddPaginationHeader(results.CurrentPage, results.PageSize,
+                results.TotalCount, results.TotalPages);
+
             return Ok(_mapper.Map<IEnumerable<GameInfoDto>>(results));
         }
 

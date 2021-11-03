@@ -1,4 +1,5 @@
 using API.Interfaces;
+using API.Models.Pagination;
 using API.Services;
 using System.Linq;
 using System.Net.Http;
@@ -22,7 +23,7 @@ namespace GamesTracker.Tests
     public class IGDBServiceTests : IClassFixture<IGDBFixture>
     {
         private readonly IGDBFixture _fixture;
-        private const string VALID_GAME = "Wolfenstein";
+        private readonly string VALID_GAME = "Wolfenstein";
 
         public IGDBServiceTests(IGDBFixture fixture)
         {
@@ -32,7 +33,7 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SearchGamesAsync_ValidGame_NotEmpty()
         {
-            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(FirstPageOf(VALID_GAME));
 
             Assert.NotEmpty(games);
         }
@@ -40,7 +41,7 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SearchGamesAsync_ValidGame_HasName()
         {
-            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(FirstPageOf(VALID_GAME));
             var game = games.First();
 
             Assert.True(!string.IsNullOrEmpty(game.Name));
@@ -49,7 +50,7 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SearchGamesAsync_ValidGame_CoverThumbExists()
         {
-            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(FirstPageOf(VALID_GAME));
             var game = games.First();
 
             var url = _fixture.IGDB.GetImageUrl(game.CoverId, GameCoverSize.Thumb);
@@ -61,7 +62,7 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SearchGamesAsync_ValidGame_SmallCoverExists()
         {
-            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(FirstPageOf(VALID_GAME));
             var game = games.First();
 
             var url = _fixture.IGDB.GetImageUrl(game.CoverId, GameCoverSize.Small);
@@ -73,7 +74,7 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SearchGamesAsync_ValidGame_BigCoverExists()
         {
-            var games = await _fixture.IGDB.SearchGamesAsync(VALID_GAME);
+            var games = await _fixture.IGDB.SearchGamesAsync(FirstPageOf(VALID_GAME));
             var game = games.First();
 
             var url = _fixture.IGDB.GetImageUrl(game.CoverId, GameCoverSize.Big);
@@ -85,7 +86,7 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SearchGamesAsync_EmptySearch_EmptyList()
         {
-            var games = await _fixture.IGDB.SearchGamesAsync(string.Empty);
+            var games = await _fixture.IGDB.SearchGamesAsync(FirstPageOf(string.Empty));
 
             Assert.Empty(games);
         }
@@ -93,9 +94,78 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SearchGamesAsync_VeryShortSearch_EmptyList()
         {
-            var games = await _fixture.IGDB.SearchGamesAsync("a");
+            var games = await _fixture.IGDB.SearchGamesAsync(FirstPageOf("a"));
 
             Assert.Empty(games);
         }
+
+        [Fact]
+        public async Task SearchGamesAsync_FirstPage_GetPaginatedResults()
+        {
+            var gamesParams = new GamesParams
+            {
+                Query = VALID_GAME,
+                PageNumber = 1,
+                PageSize = 10
+            };
+
+            var games = await _fixture.IGDB.SearchGamesAsync(gamesParams);
+
+            Assert.Equal(10, games.Count);
+        }
+
+        [Fact]
+        public async Task SearchGamesAsync_SecondPage_GetDifferentResults()
+        {
+            var gamesParams = new GamesParams
+            {
+                Query = VALID_GAME,
+                PageNumber = 1,
+                PageSize = 10
+            };
+
+            var firstPageGames = await _fixture.IGDB.SearchGamesAsync(gamesParams);
+            
+            gamesParams.PageNumber = 2;
+            var secondPageGames = await _fixture.IGDB.SearchGamesAsync(gamesParams);
+
+            Assert.NotEqual(firstPageGames[0].Id, secondPageGames[0].Id);
+        }
+
+        [Fact]
+        public async Task SearchGamesAsync_PageZero_GetFirstPage()
+        {
+            var gamesParams = new GamesParams
+            {
+                Query = VALID_GAME,
+                PageNumber = 0,
+                PageSize = 10
+            };
+
+            var zeroPageGames = await _fixture.IGDB.SearchGamesAsync(gamesParams);
+
+            gamesParams.PageNumber = 1;
+            var firstPageGames = await _fixture.IGDB.SearchGamesAsync(gamesParams);
+
+            Assert.Equal(zeroPageGames[0].Id, firstPageGames[0].Id);
+        }
+
+        [Fact]
+        public async Task SearchGamesAsync_BigPageNumber_EmptyList()
+        {
+            var gamesParams = new GamesParams
+            {
+                Query = VALID_GAME,
+                PageNumber = 1000,
+                PageSize = 10
+            };
+
+            var games = await _fixture.IGDB.SearchGamesAsync(gamesParams);
+
+            Assert.Empty(games);
+        }
+
+        private static GamesParams FirstPageOf(string query)
+            => new() { Query = query, PageSize = 50, PageNumber = 1 };
     }
 }

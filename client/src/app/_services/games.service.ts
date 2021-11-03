@@ -13,12 +13,11 @@ export class GamesService {
   constructor(private http: HttpClient) { }
 
   searchGames(query: string) {
-    const httpOptions = {
-      params: {
-        query: query
-      }
-    };
-    return this.http.get<GameInfo[]>(this.baseUrl + 'games/search', httpOptions);
+    return this.http.post<GameInfo[]>(this.baseUrl + 'games/search', {
+      query: query,
+      pageSize: 12,
+      pageNumber: 1
+    });
   }
 
   getGame(id: number) {

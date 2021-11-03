@@ -1,5 +1,5 @@
 ﻿using API.Models;
-using System.Collections.Generic;
+using API.Models.Pagination;
 using System.Threading.Tasks;
 
 namespace API.Interfaces
@@ -10,7 +10,7 @@ namespace API.Interfaces
         Task<VideoGameDetails> GetGameDetailsAsync(long id);
         string GetImageUrl(string imageId, GameCoverSize size);
         string GetImageUrl(string screenshotId, GameScreenshotSize size);
-        Task<IEnumerable<VideoGame>> SearchGamesAsync(string searchString);
+        Task<PagedList<VideoGame>> SearchGamesAsync(GamesParams gamesParams);
     }
 
     public enum GameCoverSize

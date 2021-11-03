@@ -1,10 +1,10 @@
 ﻿using API.Interfaces;
 using API.Models;
+using API.Models.Pagination;
 using IGDB;
 using IGDB.Models;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,22 +21,46 @@ namespace API.Services
             _igdb = new IGDBClient(keys["igdb_client_id"].ToString(), keys["igdb_client_secret"].ToString());
         }
 
-        public async Task<IEnumerable<VideoGame>> SearchGamesAsync(string searchString)
+        public async Task<PagedList<VideoGame>> SearchGamesAsync(GamesParams gamesParams)
         {
-            if (string.IsNullOrWhiteSpace(searchString))
+            if (string.IsNullOrWhiteSpace(gamesParams.Query))
             {
-                return Array.Empty<VideoGame>();
+                return PagedList<VideoGame>.CreateEmpty();
             }
 
-            // TODO: Check if this needs to be sanitized
+            // Make sure the page number is now below 1
+            if (gamesParams.PageNumber < 1)
+            {
+                gamesParams.PageNumber = 1;
+            }
+
+            var count = await CountGames(gamesParams);
+
             // TODO: Add caching
-            // TODO: Add pagination: use /games/count endpoint. Then you can use limit and offset in the query to paginate. This is useful
-            // since the maximum limit you can set is 500 and if a query returns more than 500 items it's a problem! For now we will return
-            // at most 50 items until pagination is implemented.
             var results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, 
-                $"search \"{searchString}\"; fields name,cover.*,release_dates.*; where category = 0; limit 50;");
+                $"search \"{gamesParams.Query}\"; fields name,cover.*,release_dates.*; where category = 0; " +
+                $"limit {gamesParams.PageSize}; offset {(gamesParams.PageNumber - 1) * gamesParams.PageSize};");
+
             var games = results.Select(result => ToVideoGame(result));
-            return games;
+            return new PagedList<VideoGame>(games, count, gamesParams.PageNumber, gamesParams.PageSize);
+        }
+
+        // Counts the games.
+        // HACK: This would have been better done using the games/count endpoint but the library doesn't support it,
+        // when using games/count as endpoint in the QueryAsync method it will escape the / character.
+        private async Task<int> CountGames(GamesParams gamesParams)
+        {
+            var count = 0;
+            Game[] results;
+
+            do
+            {
+                results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{gamesParams.Query}\"; limit 500; offset {count};");
+                count += results.Length;
+            }
+            while (results.Length == 500);
+
+            return count;
         }
 
         public async Task<VideoGame> GetGameAsync(long id)
