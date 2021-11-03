@@ -21,39 +21,28 @@ namespace API.Data
             _mapper = mapper;
         }
 
-        public void Add(Game game)
-            => _context.Add(game);
+        public void Add(UserGame userGame)
+            => _context.Add(userGame);
 
-        public void Update(Game game)
-            => _context.Entry(game).State = EntityState.Modified;
+        public void Update(UserGame userGame)
+            => _context.Entry(userGame).State = EntityState.Modified;
 
-        public async Task<Game> GetGameAsync(long id)
-            => await _context.Games.FindAsync(id);
-
-        public async Task<GameInfoDto> GetGameInfoAsync(long id)
-            => await _context.Games
-                .Where(g => g.Id == id)
-                .ProjectTo<GameInfoDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-
-        public async Task<IEnumerable<LibraryGameInfoDto>> GetAsync(string username)
-        {
-            // ProjectTo didn't seem to be working here, probably because of the includes
-            var userGames = await _context.UserGames
+        // ProjectTo didn't seem to be working here, probably because Select overrides Include
+        public async Task<IEnumerable<UserGame>> GetAllAsync(string username)
+            => await _context.UserGames
                 .Include(ug => ug.SourceUser)
                 .Include(ug => ug.Game)
                 .Where(ug => ug.SourceUser.UserName == username.ToLower())
                 .ToListAsync();
 
-            return userGames.Select(ug => _mapper.Map<LibraryGameInfoDto>(ug));
-        }
-
         public async Task<bool> SaveAllAsync()
             => await _context.SaveChangesAsync() > 0;
 
-        public async Task<UserGame> GetUserGameAsync(int userId, long gameId)
+        public async Task<UserGame> GetUserGameAsync(string username, long gameId)
             => await _context.UserGames
-                .Where(ug => ug.SourceUserId == userId && ug.GameId == gameId)
+                .Include(ug => ug.SourceUser)
+                .Include(ug => ug.Game)
+                .Where(ug => ug.SourceUser.UserName == username.ToLower() && ug.GameId == gameId)
                 .FirstOrDefaultAsync();
 
         public void Remove(UserGame userGame)

@@ -40,7 +40,7 @@ namespace API.Controllers
             var username = User.GetUsername();
             var userId = User.GetUserId();
 
-            if (username is null)
+            if (username is null || userId is null)
             {
                 return Unauthorized();
             }
@@ -57,7 +57,7 @@ namespace API.Controllers
             }
 
             // Check if the user already has this game in the list
-            var userGame = await _libraryRepository.GetUserGameAsync(userId.Value, gameId);
+            var userGame = await _libraryRepository.GetUserGameAsync(username, gameId);
             if (userGame is not null)
             {
                 return BadRequest("You already have this game in your library");
@@ -101,8 +101,32 @@ namespace API.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<IEnumerable<LibraryGameInfoDto>>> GetUser(string username)
-            => Ok(await _libraryRepository.GetAsync(username));
+        public async Task<ActionResult<IEnumerable<LibraryGameInfoDto>>> GetLibrary(string username)
+        {
+            var userGames = await _libraryRepository.GetAllAsync(username);
+            return Ok(userGames.Select(ug => _mapper.Map<LibraryGameInfoDto>(ug)));
+        }
+
+        [HttpGet("{username}/{gameId}")]
+        public async Task<ActionResult<LibraryGameInfoDto>> GetGame(int gameId)
+        {
+            // Make sure the user is logged in
+            var username = User.GetUsername();
+
+            if (username is null)
+            {
+                return Unauthorized();
+            }
+
+            var userGame = await _libraryRepository.GetUserGameAsync(username, gameId);
+
+            if (userGame is null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<LibraryGameInfoDto>(userGame);
+        }
 
         [HttpDelete("remove-game/{gameId}")]
         public async Task<ActionResult> RemoveGame(int gameId)
@@ -111,7 +135,7 @@ namespace API.Controllers
             var username = User.GetUsername();
             var userId = User.GetUserId();
 
-            if (username is null)
+            if (username is null || userId is null)
             {
                 return Unauthorized();
             }
@@ -124,7 +148,7 @@ namespace API.Controllers
                 return Unauthorized();
             }
 
-            var userGame = await _libraryRepository.GetUserGameAsync(userId.Value, gameId);
+            var userGame = await _libraryRepository.GetUserGameAsync(username, gameId);
 
             if (userGame is null)
             {
@@ -132,9 +156,45 @@ namespace API.Controllers
             }
 
             userEntity.Games.Remove(userGame);
-            await _userRepository.SaveAllAsync();
 
-            return Ok();
+            if (await _userRepository.SaveAllAsync())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to remove game from library");
+        }
+
+        [HttpPut("update-game")]
+        public async Task<ActionResult> UpdateGame(UpdateGameDto updateGameDto)
+        {
+            // Make sure the user is logged in
+            var username = User.GetUsername();
+
+            if (username is null)
+            {
+                return Unauthorized();
+            }
+
+            var userGame = await _libraryRepository.GetUserGameAsync(username, updateGameDto.Id);
+
+            if (userGame is null)
+            {
+                return BadRequest("The game you are trying to update is not in your library");
+            }
+
+            userGame.Status = updateGameDto.Status;
+            userGame.FinishedOn = updateGameDto.FinishedOn;
+            userGame.UserRating = updateGameDto.UserRating;
+
+            _libraryRepository.Update(userGame);
+            
+            if (await _libraryRepository.SaveAllAsync())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to update game");
         }
     }
 }

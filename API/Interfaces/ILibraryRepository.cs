@@ -10,13 +10,11 @@ namespace API.Interfaces
     /// </summary>
     public interface ILibraryRepository
     {
-        void Add(Game game);
-        void Update(Game game);
+        void Add(UserGame userGame);
+        void Update(UserGame userGame);
         Task<bool> SaveAllAsync();
-        Task<UserGame> GetUserGameAsync(int userId, long gameId);
-        Task<IEnumerable<LibraryGameInfoDto>> GetAsync(string username);
-        Task<Game> GetGameAsync(long id);
-        Task<GameInfoDto> GetGameInfoAsync(long id);
+        Task<UserGame> GetUserGameAsync(string username, long gameId);
+        Task<IEnumerable<UserGame>> GetAllAsync(string username);
         void Remove(UserGame userGame);
     }
 }

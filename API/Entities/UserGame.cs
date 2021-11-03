@@ -17,9 +17,9 @@ namespace API.Entities
 
     public enum UserGameStatus
     {
-        ToPlay,
-        Playing,
-        Dropped,
-        Finished
+        ToPlay = 0,
+        Playing = 1,
+        Dropped = 2,
+        Finished = 3
     }
 }
