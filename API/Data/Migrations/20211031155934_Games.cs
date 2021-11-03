@@ -12,7 +12,7 @@ namespace API.Data.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -30,7 +30,7 @@ namespace API.Data.Migrations
                 columns: table => new
                 {
                     SourceUserId = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "bigint", nullable: false),
                     Finished = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     FinishedOn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     UserRating = table.Column<int>(type: "int", nullable: false)

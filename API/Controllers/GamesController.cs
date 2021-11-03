@@ -13,11 +13,11 @@ namespace API.Controllers
     [Authorize]
     public class GamesController : BaseApiController
     {
-        private readonly IGameRepository _gameRepository;
+        private readonly ILibraryRepository _gameRepository;
         private readonly IGamesService _gamesService;
         private readonly IMapper _mapper;
 
-        public GamesController(IGameRepository gameRepository, IGamesService gamesService, IMapper mapper)
+        public GamesController(ILibraryRepository gameRepository, IGamesService gamesService, IMapper mapper)
         {
             _gameRepository = gameRepository;
             _gamesService = gamesService;
@@ -47,21 +47,6 @@ namespace API.Controllers
         {
             var game = await _gamesService.GetGameDetailsAsync(id);
             return _mapper.Map<GameDetailsDto>(game);
-        }
-
-        [HttpGet("library/{username}")]
-        public async Task<ActionResult<IEnumerable<GameInfoDto>>> GetLibrary(string username)
-        {
-            var userGames = await _gameRepository.GetLibraryAsync(username);
-            var library = new List<GameInfoDto>();
-
-            foreach (var userGame in userGames)
-            {
-                var game = await _gamesService.GetGameAsync(userGame.Id);
-                library.Add(_mapper.Map<GameInfoDto>(game));
-            }
-
-            return Ok(library);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace API.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("CoverId")
                         .HasColumnType("longtext");
@@ -62,7 +62,7 @@ namespace API.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("GameId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Finished")
                         .HasColumnType("tinyint(1)");

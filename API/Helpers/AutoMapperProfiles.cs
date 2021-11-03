@@ -24,6 +24,14 @@ namespace API.Helpers
             CreateMap<VideoGameScreenshot, ScreenshotDto>();
 
             CreateMap<RegisterDto, AppUser>();
+
+            CreateMap<UserGame, LibraryGameInfoDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Game.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Game.Name))
+                .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Game.Year))
+                .ForMember(dest => dest.CoverUrl, opt => opt.MapFrom<GameCoverUrlResolver>());
+
+            CreateMap<VideoGame, Game>();
         }
     }
 }

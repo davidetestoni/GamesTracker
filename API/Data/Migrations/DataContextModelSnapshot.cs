@@ -42,15 +42,18 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Game", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("CoverId")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -62,16 +65,16 @@ namespace API.Data.Migrations
                     b.Property<int>("SourceUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
+                    b.Property<long>("GameId")
+                        .HasColumnType("bigint");
 
-                    b.Property<bool>("Finished")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("FinishedOn")
+                    b.Property<DateTime?>("FinishedOn")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserRating")
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserRating")
                         .HasColumnType("int");
 
                     b.HasKey("SourceUserId", "GameId");
