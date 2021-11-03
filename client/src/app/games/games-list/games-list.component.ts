@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameInfo } from 'src/app/_models/game-info';
+import { Pagination } from 'src/app/_models/pagination';
 import { GamesService } from 'src/app/_services/games.service';
 
 @Component({
@@ -9,6 +10,14 @@ import { GamesService } from 'src/app/_services/games.service';
 })
 export class GamesListComponent implements OnInit {
   games: GameInfo[] = [];
+  pagination: Pagination = {
+    currentPage: 1,
+    itemsPerPage: 12,
+    totalItems: 0,
+    totalPages: 1
+  };
+  pageNumber: number = 1;
+  pageSize: number = 12;
   model: GameSearch = { 
     query: ''
   };
@@ -16,7 +25,11 @@ export class GamesListComponent implements OnInit {
   constructor(private gamesService: GamesService) { }
 
   ngOnInit(): void {
-    this.searchGames('Wolfenstein');
+    // TODO: Remove this in prod
+    // -------------------------
+    this.model.query = 'Wolfenstein';
+    this.search();
+    // -------------------------
   }
 
   search() {
@@ -24,9 +37,15 @@ export class GamesListComponent implements OnInit {
   }
 
   searchGames(query: string) {
-    this.gamesService.searchGames(query).subscribe(games => {
-      this.games = games;
+    this.gamesService.searchGames(query, this.pageNumber, this.pageSize).subscribe(games => {
+      this.games = games.result;
+      this.pagination = games.pagination;
     });
+  }
+
+  pageChanged(event: any) {
+    this.pageNumber = event.page;
+    this.search();
   }
 
 }
