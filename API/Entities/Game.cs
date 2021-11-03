@@ -7,6 +7,7 @@ namespace API.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string CoverId { get; set; }
+        public int? Year { get; set; }
 
         public ICollection<UserGame> PlayedBy { get; set; }
     }
