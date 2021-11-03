@@ -55,7 +55,8 @@ namespace API.Services
 
             do
             {
-                results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games, $"search \"{gamesParams.Query}\"; limit 500; offset {count};");
+                results = await _igdb.QueryAsync<Game>(IGDBClient.Endpoints.Games,
+                    $"search \"{gamesParams.Query}\"; where category = 0; limit 500; offset {count};");
                 count += results.Length;
             }
             while (results.Length == 500);

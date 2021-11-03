@@ -24,9 +24,16 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("search")]
-        public async Task<ActionResult<IEnumerable<GameInfoDto>>> SearchGames(GamesParams gamesParams)
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<GameInfoDto>>> SearchGames(string query, int pageNumber, int pageSize)
         {
+            var gamesParams = new GamesParams
+            {
+                Query = query,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
             var results = await _gamesService.SearchGamesAsync(gamesParams);
 
             Response.AddPaginationHeader(results.CurrentPage, results.PageSize,
