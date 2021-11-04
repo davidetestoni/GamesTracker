@@ -1,6 +1,5 @@
 ﻿using API.Entities;
 using API.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -14,9 +13,9 @@ namespace API.Services
     {
         private readonly SymmetricSecurityKey _key;
 
-        public TokenService(IConfiguration config)
+        public TokenService(ISecretsProvider secretsProvider)
         {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretsProvider.JwtIssuerKey));
         }
 
         public string CreateToken(AppUser user)
