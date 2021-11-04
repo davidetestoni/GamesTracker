@@ -5,9 +5,7 @@ using API.Models.Pagination;
 using IGDB;
 using IGDB.Models;
 using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json.Linq;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,10 +18,9 @@ namespace API.Services
 
         public TimeSpan CacheLifetime { get; set; } = TimeSpan.FromHours(1);
 
-        public IGDBService(IDistributedCache cache)
+        public IGDBService(IDistributedCache cache, ISecretsProvider secretsProvider)
         {
-            var keys = JObject.Parse(File.ReadAllText("appkeys.json"));
-            _igdb = new IGDBClient(keys["igdb_client_id"].ToString(), keys["igdb_client_secret"].ToString());
+            _igdb = new IGDBClient(secretsProvider.TwitchAppId, secretsProvider.TwitchAppSecret);
             _cache = cache;
         }
 

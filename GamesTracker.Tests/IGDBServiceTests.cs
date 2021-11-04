@@ -1,3 +1,4 @@
+using API.Helpers;
 using API.Interfaces;
 using API.Models.Pagination;
 using API.Services;
@@ -20,7 +21,8 @@ namespace GamesTracker.Tests
         {
             var opts = Options.Create(new MemoryDistributedCacheOptions());
             var cache = new MemoryDistributedCache(opts);
-            IGDB = new IGDBService(cache);
+            var secretsProvider = new JsonSecretsProvider("appkeys.json");
+            IGDB = new IGDBService(cache, secretsProvider);
             Http = new HttpClient();
         }
     }

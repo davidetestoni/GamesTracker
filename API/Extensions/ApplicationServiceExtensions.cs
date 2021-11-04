@@ -13,11 +13,22 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
+            // In production we will need the following environment variables
+            // ASPNETCORE_ENVIRONMENT = Production
+            // MYSQL_CONNECTION = ...
+            // TWITCH_APP_ID = ...
+            // TWITCH_APP_SECRET = ...
+
+            var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
+            var dbConnectionString = isProd
+                ? Environment.GetEnvironmentVariable("MYSQL_CONNECTION")
+                : config.GetConnectionString("DB");
+
             // Use MySQL
             services.AddDbContextPool<DataContext>(
                 dbContextOptions => dbContextOptions
                     .UseMySql(
-                        config.GetConnectionString("DB"),
+                        dbConnectionString,
                         new MySqlServerVersion(new Version(8, 0, 25)),
                         mySqlOptions => { })
 
@@ -25,6 +36,15 @@ namespace API.Extensions
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
             );
+
+            if (isProd)
+            {
+                services.AddSingleton<ISecretsProvider, EnvironmentSecretsProvider>();
+            }
+            else
+            {
+                services.AddSingleton<ISecretsProvider>(_ => new JsonSecretsProvider("appkeys.json"));
+            }
 
             // Scoped = within the scope of an HTTP request
             // Transient = within the scope of a method
