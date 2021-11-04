@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using API.Controllers;
 using API.Data;
 using API.Extensions;
 using API.Interfaces;
@@ -71,6 +72,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController(nameof(FallbackController.Index), "Fallback");
             });
         }
     }
