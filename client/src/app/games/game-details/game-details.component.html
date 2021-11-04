@@ -13,7 +13,8 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group d-flex">
-                        <button class="btn btn-success">Add to my list</button>
+                        <button *ngIf="!libraryGame" class="btn btn-success" (click)="addToLibrary()">Add to my library</button>
+                        <button *ngIf="libraryGame" class="btn btn-danger" (click)="removeFromLibrary()">Remove from my library</button>
                     </div>
                 </div>
             </div>

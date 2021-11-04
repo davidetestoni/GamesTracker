@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { LibraryGameInfo } from '../_models/library-game-info';
+import { LibraryGameInfo, UserGameStatus } from '../_models/library-game-info';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class LibraryService {
   constructor(private http: HttpClient) { }
 
   getGame(id: number) {
-    return this.http.get<LibraryGameInfo>(this.baseUrl + 'library/games/' + id);
+    return this.http.get<LibraryGameInfo | null>(this.baseUrl + 'library/games/' + id);
   }
 
   getLibrary(username: string) {
@@ -20,8 +20,12 @@ export class LibraryService {
   }
 
   addGame(id: number) {
-    return this.http.post(this.baseUrl + 'library/add-game', {
-      id: id
+    // TODO: Let the user choose status etc. when adding the game to the library (show a modal)
+    return this.http.post<LibraryGameInfo>(this.baseUrl + 'library/add-game', {
+      id: id,
+      status: UserGameStatus.Playing,
+      finishedOn: null,
+      userRating: null
     });
   }
 
