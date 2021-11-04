@@ -18,7 +18,7 @@ const routes: Routes = [
     children: [
       { path: 'games', component: GamesListComponent },
       { path: 'games/:id', component: GameDetailsComponent },
-      { path: 'library', component: LibraryComponent },
+      { path: 'library/:username', component: LibraryComponent },
     ]
   },
   { path: 'errors', component: TestErrorsComponent },

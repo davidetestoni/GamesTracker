@@ -4,7 +4,7 @@ export interface GameDetails {
     id: number;
     name: string;
     coverUrl: string;
-    year: number;
+    year: number | null;
     genres: string[];
     summary: string;
     screenshots: Screenshot[];
