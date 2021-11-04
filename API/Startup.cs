@@ -64,6 +64,10 @@ namespace API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // Serves index.html from wwwroot
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

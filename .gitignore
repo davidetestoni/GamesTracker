@@ -5,6 +5,7 @@
 
 appsettings.json
 appkeys.json
+wwwroot/
 
 # User-specific files
 *.rsuser
