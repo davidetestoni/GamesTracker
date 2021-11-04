@@ -107,7 +107,7 @@ namespace API.Controllers
             return Ok(userGames.Select(ug => _mapper.Map<LibraryGameInfoDto>(ug)));
         }
 
-        [HttpGet("{username}/{gameId}")]
+        [HttpGet("games/{gameId}")]
         public async Task<ActionResult<LibraryGameInfoDto>> GetGame(int gameId)
         {
             // Make sure the user is logged in
