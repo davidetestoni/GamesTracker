@@ -5,3 +5,7 @@
 .navbar {
     background-color: #124;
 }
+
+.navbar-brand {
+    padding-top: unset;
+}
