@@ -18,6 +18,7 @@ namespace API.Extensions
             // MYSQL_CONNECTION = ...
             // TWITCH_APP_ID = ...
             // TWITCH_APP_SECRET = ...
+            // JWT_ISSUER_KEY = ...
 
             var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
             var dbConnectionString = isProd
@@ -36,15 +37,6 @@ namespace API.Extensions
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
             );
-
-            if (isProd)
-            {
-                services.AddSingleton<ISecretsProvider, EnvironmentSecretsProvider>();
-            }
-            else
-            {
-                services.AddSingleton<ISecretsProvider>(_ => new JsonSecretsProvider("appkeys.json"));
-            }
 
             // Scoped = within the scope of an HTTP request
             // Transient = within the scope of a method

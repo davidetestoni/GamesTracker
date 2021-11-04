@@ -3,6 +3,7 @@ using System.Text;
 using API.Controllers;
 using API.Data;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using API.Middlewares;
 using API.Services;
@@ -30,8 +31,15 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
+            ISecretsProvider secretsProvider = isProd
+                ? new EnvironmentSecretsProvider()
+                : new JsonSecretsProvider("appkeys.json");
+
+            services.AddSingleton(_ => secretsProvider);
+
             services.AddApplicationServices(_config);
-            services.AddIdentityServices(_config);
+            services.AddIdentityServices(secretsProvider);
 
             services.AddControllers();
             services.AddCors();
