@@ -32,7 +32,7 @@ namespace API.Controllers
         }
 
         [HttpPost("add-game")]
-        public async Task<ActionResult> AddGame(AddGameDto addGameDto)
+        public async Task<ActionResult<LibraryGameInfoDto>> AddGame(AddGameDto addGameDto)
         {
             var gameId = addGameDto.Id;
 
@@ -75,7 +75,10 @@ namespace API.Controllers
             userGame = new UserGame
             {
                 SourceUserId = userId.Value,
-                GameId = gameId
+                GameId = gameId,
+                Status = addGameDto.Status,
+                FinishedOn = addGameDto.FinishedOn,
+                UserRating = addGameDto.UserRating
             };
 
             if (userEntity.Games is null)
@@ -94,7 +97,7 @@ namespace API.Controllers
             // TODO: Use unit of work pattern to save changes!
             if (await _userRepository.SaveAllAsync())
             {
-                return Ok();
+                return _mapper.Map<LibraryGameInfoDto>(userGame);
             }
 
             return BadRequest("Failed to add game to library");
@@ -122,7 +125,7 @@ namespace API.Controllers
 
             if (userGame is null)
             {
-                return NotFound();
+                return null;
             }
 
             return _mapper.Map<LibraryGameInfoDto>(userGame);
