@@ -7,6 +7,7 @@ import { GameDetailsComponent } from './games/game-details/game-details.componen
 import { GamesListComponent } from './games/games-list/games-list.component';
 import { HomeComponent } from './home/home.component';
 import { LibraryComponent } from './library/library.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuard } from './_guards/auth.guard';
 
 const routes: Routes = [
@@ -18,9 +19,10 @@ const routes: Routes = [
     children: [
       { path: 'games', component: GamesListComponent },
       { path: 'games/:id', component: GameDetailsComponent },
-      { path: 'library/:username', component: LibraryComponent },
+      { path: 'library/:username', component: LibraryComponent }
     ]
   },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'errors', component: TestErrorsComponent },
   { path: 'not-found', component: NotFoundComponent },
   { path: 'server-error', component: ServerErrorComponent },

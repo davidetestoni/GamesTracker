@@ -21,6 +21,7 @@ import { GameCardComponent } from './games/game-card/game-card.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     NotFoundComponent,
     ServerErrorComponent,
     GameCardComponent,
-    TextInputComponent
+    TextInputComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

@@ -34,6 +34,21 @@ export class AccountService {
     );
   }
 
+  requestPasswordReset(model: any) {
+    return this.http.post(this.baseUrl + 'account/request-password-reset', model);
+  }
+
+  resetPassword(model: any) {
+    return this.http.post<User>(this.baseUrl + 'account/reset-password', model).pipe(
+      map((user: User) => {
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUserSource.next(user);
+        }
+      })
+    );
+  }
+
   register(model: any) {
     return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
       map((user: User) => {

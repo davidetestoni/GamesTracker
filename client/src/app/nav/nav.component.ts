@@ -24,6 +24,10 @@ export class NavComponent implements OnInit {
     });
   }
 
+  resetPassword() {
+    this.router.navigateByUrl('/reset-password');
+  }
+
   logout() {
     this.accountService.logout();
     this.router.navigateByUrl('/');
