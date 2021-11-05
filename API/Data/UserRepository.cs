@@ -4,7 +4,6 @@ using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +27,9 @@ namespace API.Data
         public async Task<AppUser> GetUserByUsernameAsync(string username)
             => await _context.Users.SingleOrDefaultAsync(u => u.UserName == username.ToLower());
 
+        public async Task<AppUser> GetUserByEmailAsync(string email)
+            => await _context.Users.SingleOrDefaultAsync(u => u.Email == email.ToLower());
+
         // This improves the performances by crafting a query that only gets the attributes we need
         public async Task<UserInfoDto> GetUserInfoAsync(string username)
             => await _context.Users
@@ -48,6 +50,9 @@ namespace API.Data
         /// </summary>
         public async Task<bool> SaveAllAsync()
             => await _context.SaveChangesAsync() > 0;
+
+        public void Add(AppUser user)
+            => _context.Add(user);
 
         public void Update(AppUser user)
             => _context.Entry(user).State = EntityState.Modified;

@@ -1,10 +1,8 @@
-﻿using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Linq;
@@ -16,16 +14,16 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly DataContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IDistributedCache _cache;
 
-        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper,
-            IEmailService emailService, IDistributedCache cache)
+        public AccountController(IUserRepository userRepository, ITokenService tokenService,
+            IMapper mapper, IEmailService emailService, IDistributedCache cache)
         {
-            _context = context;
+            _userRepository = userRepository;
             _tokenService = tokenService;
             _mapper = mapper;
             _emailService = emailService;
@@ -57,8 +55,8 @@ namespace API.Controllers
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
             user.PasswordSalt = hmac.Key;
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            _userRepository.Add(user);
+            await _userRepository.SaveAllAsync();
 
             // Send the registration email
             // We can implement email activation here if needed
@@ -75,7 +73,7 @@ namespace API.Controllers
         public async Task<ActionResult> RequestPasswordReset(ResetPasswordRequestDto resetPasswordRequestDto)
         {
             // Make sure the user exists
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == resetPasswordRequestDto.UserName.ToLower());
+            var user = await _userRepository.GetUserByUsernameAsync(resetPasswordRequestDto.UserName);
 
             if (user is null)
             {
@@ -105,7 +103,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
             // Search for the user for which we want to reset the password
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == resetPasswordDto.UserName.ToLower());
+            var user = await _userRepository.GetUserByUsernameAsync(resetPasswordDto.UserName);
 
             if (user is null)
             {
@@ -125,8 +123,8 @@ namespace API.Controllers
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(resetPasswordDto.NewPassword));
             user.PasswordSalt = hmac.Key;
 
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _userRepository.Update(user);
+            await _userRepository.SaveAllAsync();
 
             // Invalidate the cached code
             await _cache.RemoveAsync($"{user.UserName}_password_reset_code");
@@ -142,7 +140,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
+            var user = await _userRepository.GetUserByUsernameAsync(loginDto.UserName);
 
             if (user is null)
             {
@@ -165,9 +163,9 @@ namespace API.Controllers
         }
 
         private async Task<bool> UserExists(string username)
-            => await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
+            => await _userRepository.GetUserByUsernameAsync(username) is not null;
 
         private async Task<bool> EmailExists(string email)
-            => await _context.Users.AnyAsync(x => x.Email == email.ToLower());
+            => await _userRepository.GetUserByEmailAsync(email) is not null;
     }
 }
