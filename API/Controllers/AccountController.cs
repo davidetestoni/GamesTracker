@@ -18,12 +18,15 @@ namespace API.Controllers
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
 
-        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper,
+            IEmailService emailService)
         {
             _context = context;
             _tokenService = tokenService;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         // NOTE: If we pass e.g. strings as parameters it will expect to find them in the query string
@@ -53,6 +56,10 @@ namespace API.Controllers
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            // Send the registration email
+            // We can implement email activation here if needed
+            await _emailService.SendAsync(user.Email, "Thank you for registering", "We hope you will enjoy this website!");
 
             return new UserDto
             {
