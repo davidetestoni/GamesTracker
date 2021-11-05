@@ -79,7 +79,7 @@ namespace API.Controllers
 
             if (user is null)
             {
-                return NotFound("User not found");
+                return BadRequest("Invalid username");
             }
 
             // Generate the code
@@ -109,7 +109,7 @@ namespace API.Controllers
 
             if (user is null)
             {
-                return NotFound("User not found");
+                return BadRequest("Invalid username");
             }
 
             // Search for the code in the cache
@@ -117,7 +117,7 @@ namespace API.Controllers
 
             if (code is null || code != resetPasswordDto.TempCode)
             {
-                return Unauthorized("Invalid code");
+                return BadRequest("Invalid code");
             }
 
             // Update the user's password and salt in the database
