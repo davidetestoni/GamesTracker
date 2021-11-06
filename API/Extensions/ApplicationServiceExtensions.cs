@@ -44,6 +44,9 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddSingleton<IGamesService, IGDBService>();
             services.AddSingleton<IEmailService, SendinblueEmailService>();
+            
+            // We can easily swap this with another cache e.g. redis in order to have
+            // cache persistence even when rebooting the webserver.
             services.AddDistributedMemoryCache();
 
             return services;

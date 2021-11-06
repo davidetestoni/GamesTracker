@@ -30,7 +30,8 @@ namespace API.Controllers
             _cache = cache;
         }
 
-        // NOTE: If we pass e.g. strings as parameters it will expect to find them in the query string
+        // NOTE: If we pass e.g. strings as parameters it will expect to find them in the query string,
+        // unless we use attributes to explicitly tell the controller where to read them from,
         // so if we want to get them from the body we need to pass them as objects (DTOs)
 
         [HttpPost("register")]
