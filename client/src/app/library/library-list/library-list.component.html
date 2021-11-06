@@ -8,6 +8,7 @@
         <div *ngFor="let game of games" class="col-2">
             <app-game-card [game]="game"
                 [isLibraryGame]="true"
+                [showRemoveButton]="(accountService.currentUser$ | async)?.userName === owner"
                 [userRating]="game.userRating"
                 (removedFromLibrary)="removeFromList($event)">
             </app-game-card>
