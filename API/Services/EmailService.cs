@@ -1,11 +1,10 @@
-﻿using API.Interfaces;
-using MailKit;
+﻿using API.Exceptions;
+using API.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using System.IO;
-using System.Text;
+using System;
 using System.Threading.Tasks;
 
 namespace API.Services
@@ -32,9 +31,7 @@ namespace API.Services
                 Text = body
             };
 
-            using var ms = new MemoryStream();
-            var protocolLogger = new ProtocolLogger(ms);
-            using var smtp = new SmtpClient(protocolLogger);
+            using var smtp = new SmtpClient();
 
             try
             {
@@ -43,10 +40,9 @@ namespace API.Services
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
             }
-            catch
+            catch (Exception ex)
             {
-                var log = Encoding.UTF8.GetString(ms.ToArray());
-                throw;
+                throw new EmailException("Something went wrong", ex);
             }
         }
     }

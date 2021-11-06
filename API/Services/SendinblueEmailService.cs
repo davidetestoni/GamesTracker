@@ -1,5 +1,7 @@
-﻿using API.Interfaces;
+﻿using API.Exceptions;
+using API.Interfaces;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -47,7 +49,19 @@ namespace API.Services
 
             request.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
-            await httpClient.SendAsync(request);
+            try
+            {
+                using var response = await httpClient.SendAsync(request);
+
+                if ((int)response.StatusCode / 100 != 2)
+                {
+                    throw new EmailException($"The sendinblue API did not reply with a 2XX status code");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new EmailException("Something went wrong when contacting the sendinblue API", ex);
+            }
         }
 
         private class Email

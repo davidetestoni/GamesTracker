@@ -16,6 +16,7 @@ namespace API.Interfaces
         /// Sends an email message to the <paramref name="address"/> with the specified
         /// <paramref name="subject"/> and <paramref name="body"/>.
         /// </summary>
+        /// <exception cref="Exceptions.EmailException"></exception>
         Task SendAsync(string address, string subject, string body, bool isHtml = false);
     }
 }
