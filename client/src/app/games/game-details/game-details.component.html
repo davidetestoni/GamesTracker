@@ -10,6 +10,31 @@
                     <div>
                         <strong>Genre:</strong> {{game.genres.length > 0 ? game.genres.join(', ') : 'Unknown'}}
                     </div>
+                    <div *ngIf="libraryGame">
+                        <strong>My rating:</strong>
+                        <span class="text-muted text-right ml-2">
+                            <i [class.star-highlighted]="this.libraryGame.userRating !== null && this.libraryGame.userRating >= 1"
+                                 class="fa fa-star cursor-pointer" (click)="updateRating(1)"></i>
+                            <i [class.star-highlighted]="this.libraryGame.userRating !== null && this.libraryGame.userRating >= 2"
+                                class="fa fa-star cursor-pointer" (click)="updateRating(2)"></i>
+                            <i [class.star-highlighted]="this.libraryGame.userRating !== null && this.libraryGame.userRating >= 3"
+                                class="fa fa-star cursor-pointer" (click)="updateRating(3)"></i>
+                            <i [class.star-highlighted]="this.libraryGame.userRating !== null && this.libraryGame.userRating >= 4"
+                                class="fa fa-star cursor-pointer" (click)="updateRating(4)"></i>
+                            <i [class.star-highlighted]="this.libraryGame.userRating !== null && this.libraryGame.userRating >= 5"
+                                class="fa fa-star cursor-pointer" (click)="updateRating(5)"></i>
+                        </span>
+                        <br />
+                        <select class="form-select mt-2"
+                            [(ngModel)]="libraryGame.status"
+                            #listSelect
+                            (change)="listChanged(listSelect.value)">
+                            <option value="0">To play</option>
+                            <option value="1">Playing</option>
+                            <option value="2">Dropped</option>
+                            <option value="3">Finished</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="card-footer">
                     <div class="btn-group d-flex">

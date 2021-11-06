@@ -12,3 +12,11 @@
     padding: 10px 15px;
     border-top: none;
 }
+
+.star-highlighted {
+    color: goldenrod;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { ToastrService } from 'ngx-toastr';
 import { GameDetails } from 'src/app/_models/game-details';
-import { LibraryGameInfo } from 'src/app/_models/library-game-info';
+import { LibraryGameInfo, UserGameStatus } from 'src/app/_models/library-game-info';
 import { GamesService } from 'src/app/_services/games.service';
 import { LibraryService } from 'src/app/_services/library.service';
 
@@ -86,6 +86,29 @@ export class GameDetailsComponent implements OnInit {
       this.libraryService.removeGame(this.libraryGame.id).subscribe(() => {
         this.toastr.info(`${this.libraryGame?.name} was removed from your library`);
         this.libraryGame = undefined;
+      });
+    }
+  }
+
+  listChanged(newValue: any) {
+    if (this.libraryGame) {
+      this.libraryGame.status = parseInt(newValue);
+      this.libraryService.updateGame(this.libraryGame).subscribe(() => {
+        if (this.libraryGame) {
+          this.toastr.success(`${this.libraryGame?.name} was added to the list: ${UserGameStatus[this.libraryGame.status]}`)
+        }
+      });
+    }
+  }
+
+  updateRating(newValue: number) {
+    if (this.libraryGame) {
+      if (this.libraryGame.userRating === newValue) {
+        return;
+      }
+      this.libraryGame.userRating = newValue;
+      this.libraryService.updateGame(this.libraryGame).subscribe(() => {
+        this.toastr.success(`Rating updated to: ${newValue} stars`);
       });
     }
   }
