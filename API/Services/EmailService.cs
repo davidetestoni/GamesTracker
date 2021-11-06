@@ -28,7 +28,10 @@ namespace API.Services
             email.From.Add(MailboxAddress.Parse(SenderAddress));
             email.To.Add(MailboxAddress.Parse(address));
             email.Subject = subject;
-            email.Body = new TextPart(TextFormat.Plain) { Text = body };
+            email.Body = new TextPart(isHtml ? TextFormat.Html : TextFormat.Plain)
+            {
+                Text = body
+            };
 
             using var ms = new MemoryStream();
             var protocolLogger = new ProtocolLogger(ms);
