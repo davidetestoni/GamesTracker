@@ -21,4 +21,13 @@
         <h6 class="card-title text-center my-1">{{game?.name}}</h6>
         <p class="card-text text-muted text-center">{{game?.year}}</p>
     </div>
+    <ng-container *ngIf="isLibraryGame && userRating">
+        <p class="card-text text-center">
+            <i [class.star-highlighted]="userRating >= 1" class="fa fa-star"></i>
+            <i [class.star-highlighted]="userRating >= 2" class="fa fa-star"></i>
+            <i [class.star-highlighted]="userRating >= 3" class="fa fa-star"></i>
+            <i [class.star-highlighted]="userRating >= 4" class="fa fa-star"></i>
+            <i [class.star-highlighted]="userRating >= 5" class="fa fa-star"></i>
+        </p>
+    </ng-container>
 </div>

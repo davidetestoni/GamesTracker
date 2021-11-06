@@ -11,6 +11,7 @@ import { LibraryService } from 'src/app/_services/library.service';
 export class GameCardComponent implements OnInit {
   @Input() game: GameInfo | undefined = undefined;
   @Input() isLibraryGame: boolean = false; // If true, the add to list button will become a remove from list button
+  @Input() userRating: number | null = null;
   @Output() removedFromLibrary = new EventEmitter();
   
   constructor(private libraryService: LibraryService, private toastr: ToastrService) { }

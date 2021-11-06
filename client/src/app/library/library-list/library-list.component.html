@@ -6,7 +6,11 @@
     </ng-container>
     <ng-container *ngIf="games.length > 0">
         <div *ngFor="let game of games" class="col-2">
-            <app-game-card [game]="game" [isLibraryGame]="true" (removedFromLibrary)="removeFromList($event)"></app-game-card>
+            <app-game-card [game]="game"
+                [isLibraryGame]="true"
+                [userRating]="game.userRating"
+                (removedFromLibrary)="removeFromList($event)">
+            </app-game-card>
         </div>
     </ng-container>
 </div>
