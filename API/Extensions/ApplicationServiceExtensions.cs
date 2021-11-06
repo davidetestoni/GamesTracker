@@ -1,4 +1,4 @@
-﻿using API.Data;
+using API.Data;
 using API.Helpers;
 using API.Interfaces;
 using API.Services;
@@ -34,8 +34,8 @@ namespace API.Extensions
                         mySqlOptions => { })
 
                     // Everything from this point on is optional but helps with debugging.
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging(!isProd)
+                    .EnableDetailedErrors(!isProd)
             );
 
             // Scoped = within the scope of an HTTP request
