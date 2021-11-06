@@ -14,16 +14,16 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IDistributedCache _cache;
 
-        public AccountController(IUserRepository userRepository, ITokenService tokenService,
+        public AccountController(IUnitOfWork unitOfWork, ITokenService tokenService,
             IMapper mapper, IEmailService emailService, IDistributedCache cache)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _mapper = mapper;
             _emailService = emailService;
@@ -55,8 +55,8 @@ namespace API.Controllers
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
             user.PasswordSalt = hmac.Key;
 
-            _userRepository.Add(user);
-            await _userRepository.SaveAllAsync();
+            _unitOfWork.UserRepository.Add(user);
+            await _unitOfWork.Complete();
 
             // Send the registration email
             // We can implement email activation here if needed
@@ -73,7 +73,7 @@ namespace API.Controllers
         public async Task<ActionResult> RequestPasswordReset(ResetPasswordRequestDto resetPasswordRequestDto)
         {
             // Make sure the user exists
-            var user = await _userRepository.GetUserByUsernameAsync(resetPasswordRequestDto.UserName);
+            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(resetPasswordRequestDto.UserName);
 
             if (user is null)
             {
@@ -103,7 +103,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
             // Search for the user for which we want to reset the password
-            var user = await _userRepository.GetUserByUsernameAsync(resetPasswordDto.UserName);
+            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(resetPasswordDto.UserName);
 
             if (user is null)
             {
@@ -123,8 +123,8 @@ namespace API.Controllers
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(resetPasswordDto.NewPassword));
             user.PasswordSalt = hmac.Key;
 
-            _userRepository.Update(user);
-            await _userRepository.SaveAllAsync();
+            _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.Complete();
 
             // Invalidate the cached code
             await _cache.RemoveAsync($"{user.UserName}_password_reset_code");
@@ -140,7 +140,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(loginDto.UserName);
+            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(loginDto.UserName);
 
             if (user is null)
             {
@@ -163,9 +163,9 @@ namespace API.Controllers
         }
 
         private async Task<bool> UserExists(string username)
-            => await _userRepository.GetUserByUsernameAsync(username) is not null;
+            => await _unitOfWork.UserRepository.GetUserByUsernameAsync(username) is not null;
 
         private async Task<bool> EmailExists(string email)
-            => await _userRepository.GetUserByEmailAsync(email) is not null;
+            => await _unitOfWork.UserRepository.GetUserByEmailAsync(email) is not null;
     }
 }

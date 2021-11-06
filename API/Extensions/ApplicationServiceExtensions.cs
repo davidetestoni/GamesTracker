@@ -41,9 +41,7 @@ namespace API.Extensions
             // Scoped = within the scope of an HTTP request
             // Transient = within the scope of a method
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ILibraryRepository, LibraryRepository>();
-            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             services.AddSingleton<IGamesService, IGDBService>();
             services.AddSingleton<IEmailService, SendinblueEmailService>();

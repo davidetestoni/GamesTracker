@@ -13,13 +13,11 @@ namespace API.Controllers
     [Authorize]
     public class GamesController : BaseApiController
     {
-        private readonly ILibraryRepository _gameRepository;
         private readonly IGamesService _gamesService;
         private readonly IMapper _mapper;
 
-        public GamesController(ILibraryRepository gameRepository, IGamesService gamesService, IMapper mapper)
+        public GamesController(IGamesService gamesService, IMapper mapper)
         {
-            _gameRepository = gameRepository;
             _gamesService = gamesService;
             _mapper = mapper;
         }

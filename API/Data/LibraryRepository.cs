@@ -35,9 +35,6 @@ namespace API.Data
                 .Where(ug => ug.SourceUser.UserName == username.ToLower())
                 .ToListAsync();
 
-        public async Task<bool> SaveAllAsync()
-            => await _context.SaveChangesAsync() > 0;
-
         public async Task<UserGame> GetUserGameAsync(string username, long gameId)
             => await _context.UserGames
                 .Include(ug => ug.SourceUser)

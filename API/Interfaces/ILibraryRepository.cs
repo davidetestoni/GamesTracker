@@ -12,7 +12,6 @@ namespace API.Interfaces
     {
         void Add(UserGame userGame);
         void Update(UserGame userGame);
-        Task<bool> SaveAllAsync();
         Task<UserGame> GetUserGameAsync(string username, long gameId);
         Task<IEnumerable<UserGame>> GetAllAsync(string username);
         void Remove(UserGame userGame);

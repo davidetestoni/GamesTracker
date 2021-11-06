@@ -7,7 +7,6 @@ namespace API.Interfaces
     {
         void Add(Game game);
         void Update(Game game);
-        Task<bool> SaveAllAsync();
         Task<Game> GetGameByIdAsync(long id);
     }
 }

@@ -20,9 +20,6 @@ namespace API.Data
         public async Task<Game> GetGameByIdAsync(long id)
             => await _context.Games.FindAsync(id);
 
-        public async Task<bool> SaveAllAsync()
-            => await _context.SaveChangesAsync() > 0;
-
         public void Update(Game game)
             => _context.Entry(game).State = EntityState.Modified;
     }

@@ -45,12 +45,6 @@ namespace API.Data
         public async Task<IEnumerable<AppUser>> GetUsersAsync()
             => await _context.Users.ToListAsync();
 
-        /// <summary>
-        /// Returns true if any changes have been saved.
-        /// </summary>
-        public async Task<bool> SaveAllAsync()
-            => await _context.SaveChangesAsync() > 0;
-
         public void Add(AppUser user)
             => _context.Add(user);
 
