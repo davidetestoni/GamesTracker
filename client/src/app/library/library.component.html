@@ -1,3 +1,10 @@
-<ul *ngFor="let game of games">
-    <li>{{game.name}}</li>
-</ul>
+<h2>{{(accountService.currentUser$ | async)?.userName | titlecase}}'s library</h2>
+<hr>
+<app-library-list name="Playing" [games]="games | filterBy:'status':'1'"></app-library-list>
+<hr>
+<app-library-list name="To play" [games]="games | filterBy:'status':'0'"></app-library-list>
+<hr>
+<app-library-list name="Finished" [games]="games | filterBy:'status':'3'"></app-library-list>
+<hr>
+<app-library-list name="Dropped" [games]="games | filterBy:'status':'2'"></app-library-list>
+<hr>

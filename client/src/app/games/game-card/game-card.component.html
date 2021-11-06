@@ -8,8 +8,11 @@
                 </button>
             </li>
             <li class="list-inline-item">
-                <button class="btn btn-success" (click)="addToLibrary(game)">
+                <button class="btn btn-success" *ngIf="!isLibraryGame" (click)="addToLibrary(game)">
                     <i class="fa fa-plus"></i>
+                </button>
+                <button class="btn btn-danger" *ngIf="isLibraryGame" (click)="removeFromLibrary(game)">
+                    <i class="fa fa-minus"></i>
                 </button>
             </li>
         </ul>
