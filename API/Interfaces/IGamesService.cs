@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace API.Interfaces
 {
+    /// <summary>
+    /// Interacts with the games database provider.
+    /// </summary>
     public interface IGamesService
     {
         Task<VideoGame> GetGameAsync(long id);

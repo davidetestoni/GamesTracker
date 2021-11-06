@@ -1,4 +1,4 @@
-using API.Data;
+﻿using API.Data;
 using API.Helpers;
 using API.Interfaces;
 using API.Services;
@@ -19,6 +19,7 @@ namespace API.Extensions
             // TWITCH_APP_ID = ...
             // TWITCH_APP_SECRET = ...
             // JWT_ISSUER_KEY = ...
+            // SENDINBLUE_API_KEY = ... (or SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD if using regular EmailService)
 
             var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
             var dbConnectionString = isProd
@@ -38,8 +39,6 @@ namespace API.Extensions
                     .EnableDetailedErrors(!isProd)
             );
 
-            // Scoped = within the scope of an HTTP request
-            // Transient = within the scope of a method
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);

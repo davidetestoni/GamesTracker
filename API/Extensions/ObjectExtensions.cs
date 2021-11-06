@@ -4,7 +4,7 @@ namespace API.Extensions
 {
     public static class ObjectExtensions
     {
-        private static JsonSerializerSettings jsonSerializerOptions = new()
+        private static readonly JsonSerializerSettings jsonSerializerOptions = new()
         {
             TypeNameHandling = TypeNameHandling.Auto,
             Formatting = Formatting.None

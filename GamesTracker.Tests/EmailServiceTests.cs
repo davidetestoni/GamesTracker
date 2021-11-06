@@ -30,6 +30,9 @@ namespace GamesTracker.Tests
         [Fact]
         public async Task SendAsync_ValidAddress_Send()
         {
+            // Since we are using a temp mail to test this, we don't really have
+            // a reliable way to check if the message was received, so the fact that
+            // we didn't get any exceptions is enough to pass this test.
             await _fixture.EmailService.SendAsync(TEST_MAIL, "Test", "test message");
         }
     }

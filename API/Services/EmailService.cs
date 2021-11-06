@@ -4,7 +4,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;

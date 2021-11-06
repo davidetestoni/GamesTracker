@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace API.Models.Pagination
 {
+    /// <summary>
+    /// A list that holds a subset of an original list of items,
+    /// basing on the selected page size and number.
+    /// </summary>
     public class PagedList<T> : List<T>
     {
         public PagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
@@ -22,6 +26,10 @@ namespace API.Models.Pagination
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
 
+        /// <summary>
+        /// Creates a paged list from an <see cref="IQueryable{T}"/>, useful when dealing
+        /// with database calls since it modifies the query to only fetch the items in the required page.
+        /// </summary>
         public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source,
             int pageNumber, int pageSize)
         {

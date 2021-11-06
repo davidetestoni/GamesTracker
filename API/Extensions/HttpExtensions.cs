@@ -6,6 +6,10 @@ namespace API.Extensions
 {
     public static class HttpExtensions
     {
+        /// <summary>
+        /// Adds the Pagination header (exposed with CORS) to the <see cref="HttpResponse"/>
+        /// in order to send pagination information to the client.
+        /// </summary>
         public static void AddPaginationHeader(this HttpResponse response, int currentPage,
             int itemsPerPage, int totalItems, int totalPages)
         {
