@@ -8,4 +8,25 @@
 
 .navbar-brand {
     padding-top: unset;
+    font-family: Teko;
+    font-size: 24pt;
+    margin-top: 5px;
+}
+
+.dropdown-toggle {
+    color: white;
+}
+
+.dropdown-toggle:hover {
+    color: lightskyblue;
+}
+
+.logo {
+    height: 40px;
+    margin-top: -5px;
+}
+
+.nav-link {
+    font-family: Teko;
+    font-size: 18pt;
 }
