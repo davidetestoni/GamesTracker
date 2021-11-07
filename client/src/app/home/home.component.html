@@ -1,4 +1,21 @@
-<div class="container mt-5">
+<div class="container mt-5" *ngIf="(accountService.currentUser$ | async) as user">
+    <div>
+        <h1>Thank you for registering, {{user?.userName | titlecase}}!</h1>
+        <p class="lead">I hope you will enjoy this simple yet functional website. You can find the complete codebase on the 
+            <a href="https://github.com/davidetestoni/GamesTracker">github repository</a>.
+            <br/>
+            Tech stack used:
+        </p>
+        <ul>
+            <li>Angular 12</li>
+            <li>ASP.NET core web api (.NET 5)</li>
+            <li>MySQL</li>
+        </ul>
+        <p class="mt-3 text-muted">Note: The metadata for games is queried from the <a href="https://www.igdb.com/">IGDB</a> api.</p>
+    </div>
+</div>
+
+<div class="container mt-5" *ngIf="!(accountService.currentUser$ | async)">
     <div class="text-center" *ngIf="!registerMode">
         <h1>Browse games</h1>
         <p class="lead">Organize your library of games on GamesTracker... all you need to do is sign up!</p>
