@@ -1,5 +1,7 @@
 .dropdown-toggle, .dropdown-item {
     cursor: pointer;
+    font-family: Teko;
+    font-size: 24px;
 }
 
 .navbar {
@@ -29,4 +31,8 @@
 .nav-link {
     font-family: Teko;
     font-size: 18pt;
+}
+
+input {
+    background-color: #111 !important;
 }

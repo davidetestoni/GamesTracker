@@ -1,5 +1,4 @@
 <h2>{{(accountService.currentUser$ | async)?.userName | titlecase}}'s library</h2>
-<hr>
 <app-library-list name="Playing"
     [owner]="username"
     [games]="games | filterBy:'status':'1'"></app-library-list>
@@ -15,4 +14,3 @@
 <app-library-list name="Dropped" 
     [owner]="username"
     [games]="games | filterBy:'status':'2'"></app-library-list>
-<hr>

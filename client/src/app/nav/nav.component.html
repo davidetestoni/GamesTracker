@@ -9,12 +9,24 @@
       <!-- ng-container does not generate any HTML so it's useful to apply conditions to things -->
       <ng-container *ngIf="accountService.currentUser$ | async">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/games" routerLinkActive='active'>Games</a>
+          <a class="nav-link" routerLink="/games" routerLinkActive='active'>
+            <i class="fa fa-search mr-1"></i>
+            Games
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/library/{{(accountService.currentUser$ | async)?.userName}}" routerLinkActive='active'>Library</a>
+          <a class="nav-link" routerLink="/library/{{(accountService.currentUser$ | async)?.userName}}" routerLinkActive='active'>
+            <i class="fa fa-list mr-1"></i>
+            Library
+          </a>
         </li>
       </ng-container>
+      <li class="nav-item">
+        <a href="https://github.com/davidetestoni/GamesTracker" class="nav-link">
+          <i class="fa fa-github mr-1"></i>
+          Github
+        </a>
+      </li>
     </ul>
 
     <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
