@@ -40,3 +40,16 @@ https://github.com/jincod/dotnetcore-buildpack.git
 ```
 
 8. In the deploy tab, connect your github and tell heroku to deploy the app from your fork
+
+## Unit tests
+There are some unit tests to make sure that the 3rd party services work. To run the unit tests you will need to create a file called `appkeys.json` in the `API/` folder. The file should have the following content
+```json
+{
+	"twitch_app_id": "[twitch.com app id]",
+	"twitch_app_secret": "[twitch.com app secret]",
+	"sendinblue_api_key": "[sendinblue.com api key]"
+}
+```
+
+## Future improvements
+- Add tests for controllers as well by mocking the repositories with Moq
