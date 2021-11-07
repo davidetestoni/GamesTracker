@@ -3,6 +3,8 @@
 
 This is a website that helps keeping track of the video games you are playing, plan to play or have played in the past. You can also add a personal rating to games and show your library to other users by sharing them the URL.
 
+![image](https://user-images.githubusercontent.com/50030666/140655753-7c2fae86-6c43-440e-9679-c48441d01d19.png)
+
 ## Powered by
 - Angular 12
 - Bootstrap 4
