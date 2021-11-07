@@ -10,6 +10,7 @@ import { AccountService } from '../_services/account.service';
 })
 export class NavComponent implements OnInit {
   model: any = {};
+  navbarExpanded: boolean = false;
 
   // We need it to be public to access it in the template
   constructor(public accountService: AccountService, private router: Router,
@@ -31,6 +32,10 @@ export class NavComponent implements OnInit {
   logout() {
     this.accountService.logout();
     this.router.navigateByUrl('/');
+  }
+
+  toggleNavbar() {
+    this.navbarExpanded = !this.navbarExpanded;
   }
 
 }

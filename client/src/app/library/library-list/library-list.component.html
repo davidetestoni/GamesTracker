@@ -5,7 +5,7 @@
         <p class="font-italic">No games</p>
     </ng-container>
     <ng-container *ngIf="games.length > 0">
-        <div *ngFor="let game of games" class="col-2">
+        <div *ngFor="let game of games" class="col-xl-2 col-lg-3 col-md-4 col-6">
             <app-game-card [game]="game"
                 [isLibraryGame]="true"
                 [showRemoveButton]="(accountService.currentUser$ | async)?.userName === owner"
