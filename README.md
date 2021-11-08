@@ -56,3 +56,4 @@ There are some unit tests to make sure that the 3rd party services work. To run 
 ## Future improvements
 - Add tests for controllers as well by mocking the repositories with Moq
 - Add pagination in the library page as well (useful if someone has a lot of games)
+- Add email confirmation upon user registration
